@@ -13,12 +13,22 @@ body {
   color: white;
 }
 
-/* Title */
-h1 {
+/* HEADER GIF */
+.header {
   margin-top: 20px;
 }
 
-/* Anywhere Door */
+.header img {
+  width: 180px;
+  border-radius: 20px;
+}
+
+/* Title */
+h1 {
+  margin-top: 10px;
+}
+
+/* Door */
 .door {
   width: 220px;
   height: 300px;
@@ -41,7 +51,6 @@ h1 {
   text-align: center;
 }
 
-/* Door knob */
 .knob {
   width: 18px;
   height: 18px;
@@ -52,7 +61,7 @@ h1 {
   bottom: 40px;
 }
 
-/* Navigation (Take-copter bubbles) */
+/* Nav */
 .nav {
   display: flex;
   justify-content: center;
@@ -74,12 +83,11 @@ h1 {
   transform: translateY(-5px);
 }
 
-/* Results */
+/* Cards */
 .cards {
   display: flex;
   justify-content: center;
   gap: 15px;
-  margin-top: 20px;
 }
 
 .card {
@@ -96,7 +104,7 @@ h1 {
   transform: scale(1.05);
 }
 
-/* Pocket Button */
+/* Pocket */
 .pocket {
   margin-top: 30px;
   background: #FFD84D;
@@ -117,9 +125,14 @@ h1 {
 
 <body>
 
+<!-- 🔥 HEADER GIF -->
+<div class="header">
+  <img src="doraemon.gif" alt="Doraemon">
+</div>
+
 <h1>🐱 Doraemon Travel Finder</h1>
 
-<!-- Anywhere Door -->
+<!-- Door -->
 <div class="door">
   <input type="text" placeholder="Search destination...">
   <div class="knob"></div>
@@ -143,11 +156,9 @@ h1 {
 <button class="pocket">🟡 Add to Pocket</button>
 
 <script>
-const pocketBtn = document.querySelector(".pocket");
-
-pocketBtn.addEventListener("click", () => {
+document.querySelector(".pocket").onclick = () => {
   alert("Saved to Doraemon Pocket! 🐱✨");
-});
+};
 </script>
 
 </body>
