@@ -94,20 +94,31 @@ body {
   display: block;
 }
 
-/* 🎟 TICKET */
+/* 🎟 REAL TICKET */
 .ticket {
   margin: 20px;
-  width: 260px;
-  background: #f5deb3;
-  color: black;
-  padding: 20px;
-  border-radius: 10px;
-  transition: 0.4s;
+  width: 300px;
+  height: 160px;
+  background: url("ticket.png") no-repeat center;
+  background-size: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
+.ticket-text {
+  width: 70%;
+  font-size: 14px;
+  color: #3b2a1a;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* TEAR EFFECT */
 .torn {
-  transform: rotate(-5deg) scale(0.95);
-  opacity: 0.7;
+  transform: rotate(-3deg) scale(0.95);
+  filter: brightness(0.9);
 }
 
 /* 🍿 GENRES */
@@ -159,8 +170,10 @@ nav span {
 </div>
 
 <!-- 🎟 TICKET -->
-<aside class="ticket" id="ticket">
-  🎟 Select a movie
+<aside class="ticket">
+  <div class="ticket-text" id="ticket">
+    🎟 Select a movie
+  </div>
 </aside>
 
 <!-- 🍿 GENRE -->
@@ -180,27 +193,27 @@ nav span {
 
 <script>
 
-/* 🎬 MOVIE DATA */
+/* 🎬 MOVIE DATA (WORKING IMAGES) */
 const movies = [
   {
     name: "Mother India",
     genre: "Drama",
-    img: "motherindia.jpg"
+    img: "https://m.media-amazon.com/images/M/MV5BMjI5NjU5MjQyOF5BMl5BanBnXkFtZTgwNjY2NzQ3MjE@._V1_.jpg"
   },
   {
     name: "Pyaasa",
     genre: "Romance",
-    img: "pyaasa.jpg"
+    img: "https://m.media-amazon.com/images/M/MV5BMTU0NzEwMDg2MV5BMl5BanBnXkFtZTcwMzQ0NzA0MQ@@._V1_.jpg"
   },
   {
     name: "Guide",
     genre: "Drama",
-    img: "guide.jpg"
+    img: "https://m.media-amazon.com/images/M/MV5BMTkzOTY3MzYwOF5BMl5BanBnXkFtZTcwNjQ0NzA0MQ@@._V1_.jpg"
   },
   {
     name: "Sholay",
     genre: "Action",
-    img: "sholay.jpg"
+    img: "https://m.media-amazon.com/images/M/MV5BMTY3OTY3NjQ5OF5BMl5BanBnXkFtZTgwOTYyNTYxMTE@._V1_.jpg"
   }
 ];
 
@@ -263,11 +276,13 @@ document.querySelectorAll(".genres button").forEach(btn => {
 
 /* 🎟 TICKET */
 function selectMovie(movie) {
-  ticket.classList.add("torn");
+  const ticketBox = document.querySelector(".ticket");
+
+  ticketBox.classList.add("torn");
 
   setTimeout(() => {
     ticket.innerHTML = `🎟 ${movie}<br>Now Showing ✨`;
-    ticket.classList.remove("torn");
+    ticketBox.classList.remove("torn");
   }, 300);
 }
 
