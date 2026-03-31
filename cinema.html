@@ -10,29 +10,35 @@ body {
   background: #7b0f0f;
   font-family: serif;
   color: white;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* HEADER */
 .header {
   display: flex;
   justify-content: space-between;
-  padding: 20px 40px;
+  width: 80%;
   font-size: 28px;
+  margin: 20px 0;
 }
 
-/* 🎬 CLAPPERBOARD */
+/* 🎬 CLAPPER */
 .clapper {
   width: 320px;
-  margin: auto;
   perspective: 600px;
 }
 
 .flap {
-  background: black;
   height: 40px;
+  background: black;
   transform-origin: top;
   transition: 0.4s;
+}
+
+.clap {
+  transform: rotateX(-60deg);
 }
 
 .clapper-body {
@@ -46,69 +52,77 @@ body {
   margin: 5px 0;
 }
 
-/* FLAP ANIMATION */
-.clap {
-  transform: rotateX(-60deg);
-}
-
 /* 🎞 FILM STRIP */
 .film-container {
   overflow: hidden;
-  margin: 20px 0;
+  width: 80%;
+  margin: 30px auto;
 }
 
 .film-strip {
   display: flex;
-  gap: 20px;
-  animation: scroll 10s linear infinite;
+  gap: 30px;
+  width: max-content;
+  animation: scroll 25s linear infinite;
+}
+
+.film-strip:hover {
+  animation-play-state: paused;
 }
 
 @keyframes scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 .frame {
   background: #c9a66b;
-  padding: 10px;
-  border-radius: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.frame:hover {
+  transform: scale(1.1);
 }
 
 .frame img {
-  width: 100px;
-  height: 150px;
-  cursor: pointer;
+  width: 120px;
+  height: 170px;
+  object-fit: cover;
+  display: block;
 }
 
 /* 🎟 TICKET */
 .ticket {
-  margin: 20px auto;
+  margin: 20px;
   width: 260px;
   background: #f5deb3;
   color: black;
   padding: 20px;
   border-radius: 10px;
-  transition: transform 0.5s;
+  transition: 0.4s;
 }
 
-/* TEAR EFFECT */
 .torn {
   transform: rotate(-5deg) scale(0.95);
   opacity: 0.7;
 }
 
-/* 🍿 GENRE */
+/* 🍿 GENRES */
 .genres button {
   margin: 10px;
-  padding: 10px;
+  padding: 10px 15px;
   border-radius: 20px;
-  background: #ffcc00;
   border: none;
+  background: #ffcc00;
+  cursor: pointer;
 }
 
 /* NAV */
 nav {
-  margin-top: 30px;
+  margin: 30px;
 }
 
 nav span {
@@ -128,12 +142,12 @@ nav span {
 <!-- 🎬 CLAPPER -->
 <div class="clapper">
   <div class="flap" id="flap"></div>
-
   <div class="clapper-body">
     <input id="search" placeholder="🎬 Search movie">
     <select>
       <option>Year</option>
-      <option>1990s</option>
+      <option>1950s</option>
+      <option>1960s</option>
     </select>
     <input placeholder="Actor / Director">
   </div>
@@ -141,30 +155,7 @@ nav span {
 
 <!-- 🎞 FILM STRIP -->
 <div class="film-container">
-  <section class="film-strip">
-
-    <div class="frame" onclick="selectMovie('Mother India')">
-      <img src="https://upload.wikimedia.org/wikipedia/en/1/1c/Mother_India.jpg">
-    </div>
-
-    <div class="frame" onclick="selectMovie('Pyaasa')">
-      <img src="https://upload.wikimedia.org/wikipedia/en/7/70/Pyaasa.jpg">
-    </div>
-
-    <div class="frame" onclick="selectMovie('Guide')">
-      <img src="https://upload.wikimedia.org/wikipedia/en/5/5e/Guide1965.jpg">
-    </div>
-
-    <!-- DUPLICATE FOR LOOP EFFECT -->
-    <div class="frame">
-      <img src="https://upload.wikimedia.org/wikipedia/en/1/1c/Mother_India.jpg">
-    </div>
-
-    <div class="frame">
-      <img src="https://upload.wikimedia.org/wikipedia/en/7/70/Pyaasa.jpg">
-    </div>
-
-  </section>
+  <section class="film-strip" id="filmStrip"></section>
 </div>
 
 <!-- 🎟 TICKET -->
@@ -177,7 +168,6 @@ nav span {
   <button>🍿 Action</button>
   <button>🍿 Romance</button>
   <button>🍿 Drama</button>
-  <button>🍿 Comedy</button>
 </div>
 
 <!-- NAV -->
@@ -190,26 +180,93 @@ nav span {
 
 <script>
 
-/* 🎬 CLAPPER ANIMATION */
-const search = document.getElementById("search");
+/* 🎬 MOVIE DATA */
+const movies = [
+  {
+    name: "Mother India",
+    genre: "Drama",
+    img: "https://m.media-amazon.com/images/M/MV5BMjI5NjU5MjQyOF5BMl5BanBnXkFtZTgwNjY2NzQ3MjE@._V1_.jpg"
+  },
+  {
+    name: "Pyaasa",
+    genre: "Romance",
+    img: "https://m.media-amazon.com/images/M/MV5BMTU0NzEwMDg2MV5BMl5BanBnXkFtZTcwMzQ0NzA0MQ@@._V1_.jpg"
+  },
+  {
+    name: "Guide",
+    genre: "Drama",
+    img: "https://m.media-amazon.com/images/M/MV5BMTkzOTY3MzYwOF5BMl5BanBnXkFtZTcwNjQ0NzA0MQ@@._V1_.jpg"
+  },
+  {
+    name: "Sholay",
+    genre: "Action",
+    img: "https://m.media-amazon.com/images/M/MV5BMTY3OTY3NjQ5OF5BMl5BanBnXkFtZTgwOTYyNTYxMTE@._V1_.jpg"
+  }
+];
+
+const strip = document.getElementById("filmStrip");
+const ticket = document.getElementById("ticket");
 const flap = document.getElementById("flap");
+const search = document.getElementById("search");
 
-search.addEventListener("keydown", () => {
-  flap.classList.add("clap");
+/* 🎞 RENDER */
+function renderMovies(list) {
+  strip.innerHTML = "";
 
-  setTimeout(() => {
-    flap.classList.remove("clap");
-  }, 300);
+  list.forEach(movie => {
+    const div = document.createElement("div");
+    div.className = "frame";
+
+    div.innerHTML = `<img src="${movie.img}">`;
+
+    div.onclick = () => selectMovie(movie.name);
+
+    strip.appendChild(div);
+  });
+
+  /* duplicate for smooth loop */
+  list.forEach(movie => {
+    const div = document.createElement("div");
+    div.className = "frame";
+    div.innerHTML = `<img src="${movie.img}">`;
+    strip.appendChild(div);
+  });
+}
+
+renderMovies(movies);
+
+/* 🎬 SEARCH */
+search.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+
+    flap.classList.add("clap");
+    setTimeout(() => flap.classList.remove("clap"), 300);
+
+    const value = search.value.toLowerCase();
+
+    const filtered = movies.filter(m =>
+      m.name.toLowerCase().includes(value)
+    );
+
+    renderMovies(filtered.length ? filtered : movies);
+  }
 });
 
-/* 🎟 TICKET ANIMATION */
-function selectMovie(movie) {
-  const ticket = document.getElementById("ticket");
+/* 🍿 GENRE */
+document.querySelectorAll(".genres button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const genre = btn.innerText.replace("🍿","").trim();
+    const filtered = movies.filter(m => m.genre === genre);
+    renderMovies(filtered);
+  });
+});
 
+/* 🎟 TICKET */
+function selectMovie(movie) {
   ticket.classList.add("torn");
 
   setTimeout(() => {
-    ticket.innerHTML = "🎟 " + movie + "<br>Details appear here";
+    ticket.innerHTML = `🎟 ${movie}<br>Now Showing ✨`;
     ticket.classList.remove("torn");
   }, 300);
 }
