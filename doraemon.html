@@ -17,15 +17,10 @@ body {
   text-align: center;
 }
 
-/* HEADER GIF */
+/* HEADER */
 .header img {
-  width: 140px;
+  width: 130px;
   margin-bottom: 10px;
-}
-
-/* TITLE */
-h1 {
-  margin-bottom: 20px;
 }
 
 /* WRAPPER */
@@ -34,14 +29,13 @@ h1 {
   position: relative;
 }
 
-/* FRAME */
 .door-frame {
-  width: 320px;
-  height: 200px;
+  width: 340px;
+  height: 230px;
   position: relative;
 }
 
-/* 🌍 INSIDE PORTAL */
+/* 🌍 PORTAL */
 .inside {
   position: absolute;
   width: 100%;
@@ -55,12 +49,11 @@ h1 {
   transition: opacity 0.5s;
 }
 
-/* SHOW */
 .inside.show {
   opacity: 1;
 }
 
-/* RESULTS */
+/* CARDS */
 .results {
   display: flex;
   gap: 10px;
@@ -68,9 +61,16 @@ h1 {
 
 .card {
   background: white;
-  padding: 10px;
   border-radius: 10px;
   border: 2px solid #1F3A5F;
+  padding: 8px;
+  width: 90px;
+  cursor: pointer;
+}
+
+.card img {
+  width: 100%;
+  border-radius: 8px;
 }
 
 /* 🚪 DOOR */
@@ -86,12 +86,10 @@ h1 {
   z-index: 2;
 }
 
-/* OPEN */
 .door.open {
   transform: rotateY(-120deg);
 }
 
-/* KNOB */
 .knob {
   width: 18px;
   height: 18px;
@@ -111,7 +109,6 @@ h1 {
   transition: all 1s ease;
 }
 
-/* FLY */
 .copter.fly {
   bottom: 50%;
   left: 45%;
@@ -119,7 +116,7 @@ h1 {
   opacity: 0;
 }
 
-/* FLOATING CATEGORY ICONS */
+/* NAV */
 .nav {
   margin-top: 40px;
   display: flex;
@@ -129,14 +126,27 @@ h1 {
 .icon {
   font-size: 22px;
   animation: float 3s ease-in-out infinite;
+  cursor: pointer;
 }
-
-.icon:nth-child(2) { animation-delay: 0.5s; }
-.icon:nth-child(3) { animation-delay: 1s; }
 
 @keyframes float {
   0%,100% { transform: translateY(0px); }
   50% { transform: translateY(-15px); }
+}
+
+/* DETAIL VIEW */
+.detail img {
+  width: 120px;
+  border-radius: 10px;
+}
+
+.detail button {
+  padding: 8px 12px;
+  margin-top: 10px;
+  border-radius: 20px;
+  border: none;
+  background: #FFD84D;
+  cursor: pointer;
 }
 </style>
 
@@ -144,40 +154,26 @@ h1 {
 
 <body>
 
-<!-- HEADER -->
 <div class="header">
-  <img src="./doraemon.gif" alt="Doraemon">
+  <img src="./doraemon.gif">
 </div>
 
-<h1>Anywhere Door</h1>
+<h2>Anywhere Door</h2>
 
-<!-- DOOR SYSTEM -->
 <div class="door-wrapper">
-
   <div class="door-frame">
 
-    <!-- 🌍 INSIDE -->
-    <div class="inside" id="inside">
-      <div class="results">
-        <div class="card">🏝 Bali</div>
-        <div class="card">🏔 Swiss</div>
-        <div class="card">🏙 NYC</div>
-      </div>
-    </div>
+    <div class="inside" id="inside"></div>
 
-    <!-- 🚪 DOOR -->
     <div class="door" id="door">
       <div class="knob"></div>
     </div>
 
   </div>
-
 </div>
 
-<!-- 🚁 COPTER -->
 <img src="copter.png" class="copter" id="copter">
 
-<!-- FLOATING ICONS -->
 <div class="nav">
   <div class="icon">🚁 Beach</div>
   <div class="icon">🚁 City</div>
@@ -189,23 +185,80 @@ const door = document.getElementById("door");
 const copter = document.getElementById("copter");
 const inside = document.getElementById("inside");
 
-/* CLICK INTERACTION */
-door.addEventListener("click", () => {
+/* DATA WITH IMAGES */
+const data = {
+  Beach: [
+    {name:"🏝 Bali", img:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e"},
+    {name:"🏖 Maldives", img:"https://images.unsplash.com/photo-1506744038136-46273834b3fb"},
+    {name:"🌊 Goa", img:"https://images.unsplash.com/photo-1501785888041-af3ef285b470"}
+  ],
+  City: [
+    {name:"🏙 NYC", img:"https://images.unsplash.com/photo-1493244040629-496f6d136cc3"},
+    {name:"🏙 Tokyo", img:"https://images.unsplash.com/photo-1549692520-acc6669e2f0c"},
+    {name:"🏙 Paris", img:"https://images.unsplash.com/photo-1502602898657-3e91760cbb34"}
+  ],
+  Mountains: [
+    {name:"🏔 Swiss", img:"https://images.unsplash.com/photo-1501785888041-af3ef285b470"},
+    {name:"⛰ Himalayas", img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"},
+    {name:"🏔 Alps", img:"https://images.unsplash.com/photo-1464822759844-d150baec0494"}
+  ]
+};
 
-  // Copter flies
-  copter.classList.add("fly");
+let pocket = [];
 
-  // Door opens
-  setTimeout(() => {
-    door.classList.add("open");
-  }, 600);
+const icons = document.querySelectorAll(".icon");
 
-  // Show results
-  setTimeout(() => {
-    inside.classList.add("show");
-  }, 900);
+icons.forEach(icon => {
+  icon.addEventListener("click", () => {
 
+    const category = icon.textContent.trim().split(" ")[1];
+
+    inside.innerHTML = `
+      <div>
+        <h3>${category}</h3>
+        <div class="results">
+          ${data[category].map(place => `
+            <div class="card" onclick="expandPlace('${place.name}', '${place.img}')">
+              <img src="${place.img}">
+              <p>${place.name}</p>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+
+    door.classList.remove("open");
+    inside.classList.remove("show");
+    copter.classList.remove("fly");
+
+    setTimeout(() => copter.classList.add("fly"), 100);
+    setTimeout(() => door.classList.add("open"), 600);
+    setTimeout(() => inside.classList.add("show"), 900);
+
+  });
 });
+
+/* DETAIL VIEW */
+function expandPlace(name, img) {
+  inside.innerHTML = `
+    <div class="detail">
+      <h2>${name}</h2>
+      <img src="${img}">
+      <br>
+      <button onclick="addToPocket('${name}')">🧳 Add to Pocket</button>
+      <br>
+      <button onclick="history.back()">⬅ Back</button>
+    </div>
+  `;
+}
+
+/* POCKET */
+function addToPocket(place) {
+  if (!pocket.includes(place)) {
+    pocket.push(place);
+  }
+  alert(place + " added to pocket 🧳");
+}
 </script>
 
 </body>
