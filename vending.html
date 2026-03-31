@@ -11,14 +11,14 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  font-family: sans-serif;
   margin: 0;
+  font-family: sans-serif;
 }
 
 /* MACHINE */
 .machine {
-  width: 500px; /* BIGGER */
-  height: 700px;
+  width: 520px;
+  height: 720px;
   background: linear-gradient(145deg, #ff00cc, #3333ff);
   border-radius: 30px;
   padding: 20px;
@@ -35,32 +35,42 @@ body {
   font-size: 18px;
 }
 
-/* GRID (BIG SCREEN AREA) */
+/* GRID */
 .grid {
   position: relative;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
   margin: 20px 0;
-  height: 350px;
 }
 
 /* ITEMS */
 .item {
   background: white;
   border-radius: 15px;
-  padding: 20px;
+  padding: 10px;
   text-align: center;
-  font-size: 18px;
-  transition: transform 0.2s;
+  transition: 0.2s;
 }
 
+.item img {
+  width: 100%;
+  height: 90px;
+  object-fit: contain;
+}
+
+.item p {
+  margin: 5px 0 0;
+  font-size: 14px;
+}
+
+/* ACTIVE ITEM */
 .item.active {
   outline: 4px solid red;
   transform: scale(1.05);
 }
 
-/* CURSOR (JOYSTICK DOT) */
+/* JOYSTICK CURSOR */
 .cursor {
   position: absolute;
   width: 25px;
@@ -81,15 +91,13 @@ body {
   transform: translateX(-50%);
   animation: fall 1s ease forwards;
   z-index: 10;
-  background: white;
-  padding: 10px;
-  border-radius: 10px;
+  text-align: center;
 }
 
 @keyframes fall {
   0% { top: 0; transform: translateX(-50%) rotate(0deg); }
-  70% { top: 280px; transform: translateX(-50%) rotate(25deg); }
-  100% { top: 330px; transform: translateX(-50%) rotate(10deg); }
+  70% { top: 250px; transform: translateX(-50%) rotate(25deg); }
+  100% { top: 320px; transform: translateX(-50%) rotate(10deg); }
 }
 
 /* TRAY */
@@ -112,16 +120,40 @@ body {
 <div class="machine">
 
   <div class="display">
-    🎮 Use Arrow Keys + Enter to Play
+    🎮 Use Arrow Keys + Enter
   </div>
 
-  <section class="grid" id="grid" tabindex="0">
-    <div class="item">Doritos</div>
-    <div class="item">Snickers</div>
-    <div class="item">Sprite</div>
-    <div class="item">Lays</div>
-    <div class="item">KitKat</div>
-    <div class="item">Fanta</div>
+  <section class="grid" id="grid">
+
+    <div class="item" data-name="Doritos">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Doritos_Nacho_Cheese.jpg">
+      <p>Doritos</p>
+    </div>
+
+    <div class="item" data-name="Snickers">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Snickers_bar.jpg">
+      <p>Snickers</p>
+    </div>
+
+    <div class="item" data-name="Sprite">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Sprite_can.jpg">
+      <p>Sprite</p>
+    </div>
+
+    <div class="item" data-name="Lays">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/2/20/Lay%27s_classic.jpg">
+      <p>Lays</p>
+    </div>
+
+    <div class="item" data-name="KitKat">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/KitKat.jpg">
+      <p>KitKat</p>
+    </div>
+
+    <div class="item" data-name="Fanta">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Fanta_Orange.jpg">
+      <p>Fanta</p>
+    </div>
 
     <div class="cursor" id="cursor"></div>
   </section>
@@ -139,10 +171,10 @@ const grid = document.getElementById("grid");
 let index = 0;
 const cols = 3;
 
-/* FORCE FOCUS (IMPORTANT FIX) */
-grid.focus();
+/* ENSURE KEYS WORK */
+window.focus();
 
-/* UPDATE CURSOR */
+/* POSITION CURSOR */
 function updateCursor() {
   items.forEach(i => i.classList.remove("active"));
   items[index].classList.add("active");
@@ -157,8 +189,8 @@ function updateCursor() {
 
 updateCursor();
 
-/* CONTROLS */
-document.addEventListener("keydown", (e) => {
+/* JOYSTICK CONTROLS */
+window.addEventListener("keydown", (e) => {
 
   if (e.key === "ArrowRight") index++;
   if (e.key === "ArrowLeft") index--;
@@ -171,15 +203,22 @@ document.addEventListener("keydown", (e) => {
   updateCursor();
 
   if (e.key === "Enter") {
-    dispenseItem(items[index].innerText);
+    dispenseItem();
   }
 });
 
 /* DISPENSE */
-function dispenseItem(name) {
+function dispenseItem() {
+  const item = items[index];
+  const name = item.dataset.name;
+  const imgSrc = item.querySelector("img").src;
+
   const falling = document.createElement("div");
   falling.className = "falling";
-  falling.innerText = name;
+  falling.innerHTML = `
+    <img src="${imgSrc}" style="width:80px"><br>
+    ${name}
+  `;
 
   grid.appendChild(falling);
 
