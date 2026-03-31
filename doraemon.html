@@ -15,67 +15,24 @@ body {
   background: linear-gradient(#2D9CDB, #BEE9FF);
   font-family: sans-serif;
   text-align: center;
-  overflow: hidden;
   cursor: none;
+  perspective: 1000px;
 }
 
-/* HEADER */
+/* HEADER GIF */
 .header img {
-  width: 130px;
+  width: 150px;
   margin-bottom: 10px;
 }
 
-/* TITLE */
-h1 {
-  margin-bottom: 20px;
-}
-
-/* 🚪 DOOR */
+/* 🚪 DOOR SYSTEM */
 .door-container {
   position: relative;
   width: 320px;
   height: 200px;
 }
 
-.door {
-  width: 100%;
-  height: 100%;
-  background: #FF7BA9;
-  border-radius: 20px;
-  border: 5px solid #1F3A5F;
-  position: absolute;
-  transform-origin: left;
-  transition: transform 0.7s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-}
-
-/* OPEN */
-.door.open {
-  transform: perspective(800px) rotateY(-70deg);
-}
-
-.door input {
-  width: 70%;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  text-align: center;
-}
-
-.knob {
-  width: 18px;
-  height: 18px;
-  background: #1F3A5F;
-  border-radius: 50%;
-  position: absolute;
-  right: 12px;
-  bottom: 30px;
-}
-
-/* 🌍 PORTAL RESULTS */
+/* PORTAL (behind) */
 .portal {
   position: absolute;
   width: 100%;
@@ -90,11 +47,51 @@ h1 {
   transition: opacity 0.5s;
 }
 
-/* SHOW RESULTS */
 .portal.show {
   opacity: 1;
 }
 
+/* DOOR */
+.door {
+  width: 100%;
+  height: 100%;
+  background: #FF7BA9;
+  border-radius: 20px;
+  border: 5px solid #1F3A5F;
+  position: absolute;
+  transform-origin: left center;
+  transition: transform 0.8s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+/* OPEN FULL */
+.door.open {
+  transform: rotateY(-110deg);
+}
+
+.door input {
+  width: 70%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  text-align: center;
+}
+
+/* KNOB */
+.knob {
+  width: 18px;
+  height: 18px;
+  background: #1F3A5F;
+  border-radius: 50%;
+  position: absolute;
+  right: 12px;
+  bottom: 30px;
+}
+
+/* 🌍 CARDS */
 .card {
   background: white;
   padding: 15px;
@@ -102,7 +99,7 @@ h1 {
   border: 3px solid #1F3A5F;
 }
 
-/* 🚁 FLOATING ICONS */
+/* 🚁 FLOAT ICONS */
 .nav {
   margin-top: 40px;
   display: flex;
@@ -114,36 +111,44 @@ h1 {
   animation: float 3s ease-in-out infinite;
 }
 
-/* FLOAT ANIMATION */
 @keyframes float {
   0%,100% { transform: translateY(0px); }
   50% { transform: translateY(-15px); }
 }
 
-/* DELAYS */
-.icon:nth-child(2) { animation-delay: 0.5s; }
-.icon:nth-child(3) { animation-delay: 1s; }
-
-/* 🚁 CURSOR */
+/* 🚁 DORAEMON COPTER CURSOR */
 .cursor {
   position: fixed;
-  width: 40px;
-  height: 40px;
-  background: yellow;
+  width: 30px;
+  height: 30px;
+  background: red;
   border-radius: 50%;
   pointer-events: none;
+  box-shadow: 0 0 10px yellow;
 }
 
+/* propeller */
+.cursor::before {
+  content: "";
+  position: absolute;
+  width: 40px;
+  height: 6px;
+  background: yellow;
+  top: -10px;
+  left: -5px;
+  border-radius: 5px;
+  animation: spin 0.2s linear infinite;
+}
+
+/* center rod */
 .cursor::after {
   content: "";
   position: absolute;
-  width: 30px;
-  height: 6px;
+  width: 4px;
+  height: 10px;
   background: #333;
-  top: -8px;
-  left: 5px;
-  border-radius: 5px;
-  animation: spin 0.3s linear infinite;
+  top: -6px;
+  left: 13px;
 }
 
 @keyframes spin {
@@ -155,23 +160,22 @@ h1 {
 
 <body>
 
+<!-- HEADER -->
 <div class="header">
   <img src="./doraemon.gif">
 </div>
 
-<h1>Doraemon Anywhere Door</h1>
+<h2>Anywhere Door</h2>
 
-<!-- DOOR + PORTAL -->
+<!-- DOOR -->
 <div class="door-container">
-  
-  <!-- PORTAL (behind door) -->
+
   <div class="portal" id="portal">
     <div class="card">🏝 Bali</div>
     <div class="card">🏔 Swiss</div>
     <div class="card">🏙 NYC</div>
   </div>
 
-  <!-- DOOR -->
   <div class="door" id="door">
     <input type="text" placeholder="Where to go?">
     <div class="knob"></div>
@@ -179,7 +183,7 @@ h1 {
 
 </div>
 
-<!-- FLOATING ICONS -->
+<!-- NAV -->
 <div class="nav">
   <div class="icon">🚁 Beach</div>
   <div class="icon">🚁 City</div>
@@ -191,8 +195,8 @@ h1 {
 
 <script>
 const door = document.getElementById("door");
-const input = document.querySelector("input");
 const portal = document.getElementById("portal");
+const input = document.querySelector("input");
 
 /* OPEN DOOR */
 input.addEventListener("focus", () => {
@@ -208,7 +212,7 @@ document.addEventListener("click", (e) => {
   }
 });
 
-/* CURSOR */
+/* CURSOR FOLLOW */
 const cursor = document.querySelector(".cursor");
 
 document.addEventListener("mousemove", (e) => {
