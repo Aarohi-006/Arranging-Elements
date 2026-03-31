@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Genie Bazaar UI</title>
+
+<style>
+body {
+  margin: 0;
+  background: radial-gradient(circle, #5a2a82, #2d0b4e);
+  font-family: serif;
+  overflow: hidden;
+  color: white;
+}
+
+/* 🟣 SEARCH CLOUD */
+.search-cloud {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #7b3fcf;
+  padding: 20px 40px;
+  border-radius: 50px;
+  box-shadow: 0 0 20px rgba(255,255,255,0.3);
+  animation: float 4s ease-in-out infinite;
+}
+
+.search-cloud input {
+  border: none;
+  padding: 10px;
+  border-radius: 20px;
+  width: 250px;
+  text-align: center;
+}
+
+@keyframes float {
+  0%,100% { transform: translate(-50%,0); }
+  50% { transform: translate(-50%,-10px); }
+}
+
+/* 🧞 CARPET */
+.carpet {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 250px;
+  background: linear-gradient(#8b1e3f, #5a0f2d);
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+/* 🏺 STALLS */
+.stall {
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.stall:hover {
+  transform: translateY(-10px) scale(1.1);
+}
+
+/* 📜 SCROLL */
+.scroll {
+  position: absolute;
+  bottom: 320px;
+  left: 50%;
+  transform: translateX(-50%) scaleY(0);
+  transform-origin: top;
+  background: #f5deb3;
+  color: #3b2a1a;
+  padding: 20px;
+  width: 300px;
+  border-radius: 10px;
+  transition: 0.5s;
+  text-align: center;
+}
+
+.scroll.show {
+  transform: translateX(-50%) scaleY(1);
+}
+
+/* 🧞 GENIE CURSOR */
+.genie {
+  position: absolute;
+  width: 60px;
+  pointer-events: none;
+  transition: transform 0.1s;
+}
+
+/* ✨ SMOKE */
+.smoke {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: rgba(200,200,255,0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: fade 1s forwards;
+}
+
+@keyframes fade {
+  to {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+/* NAV */
+nav {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+nav span {
+  margin: 0 15px;
+  cursor: pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- 🟣 SEARCH -->
+<div class="search-cloud">
+  <input placeholder="✨ What do you seek?">
+</div>
+
+<!-- 🧞 CARPET -->
+<section class="carpet">
+  <div class="stall" onclick="showItem('Spices 🏺')">🏺<br>SPICES</div>
+  <div class="stall" onclick="showItem('Jewels 💎')">💎<br>JEWELS</div>
+  <div class="stall" onclick="showItem('Fabrics 🧵')">🧵<br>FABRICS</div>
+</section>
+
+<!-- 📜 SCROLL -->
+<aside class="scroll" id="scroll">
+  Magical item appears...
+</aside>
+
+<!-- 🧞 GENIE -->
+<img src="https://i.imgur.com/6X4QZ5b.png" class="genie" id="genie">
+
+<!-- NAV -->
+<nav>
+  🌍 Africa | 🏜 Middle East | 🌏 Asia | 🌍 Europe
+</nav>
+
+<script>
+const genie = document.getElementById("genie");
+const scroll = document.getElementById("scroll");
+
+/* 🧞 FOLLOW CURSOR */
+document.addEventListener("mousemove", e => {
+  genie.style.left = e.pageX + "px";
+  genie.style.top = e.pageY + "px";
+
+  /* smoke trail */
+  const smoke = document.createElement("div");
+  smoke.className = "smoke";
+  smoke.style.left = e.pageX + "px";
+  smoke.style.top = e.pageY + "px";
+  document.body.appendChild(smoke);
+
+  setTimeout(() => smoke.remove(), 1000);
+});
+
+/* 📜 SHOW ITEM */
+function showItem(item) {
+  scroll.innerHTML = "🧞 " + item + "<br>A treasure worthy of a sultan!";
+  scroll.classList.add("show");
+}
+</script>
+
+</body>
+</html>
