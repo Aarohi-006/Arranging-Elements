@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Retro Music Machine</title>
+
+<style>
+body {
+  margin: 0;
+  background: #6b3e1d;
+  font-family: monospace;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* MAIN DEVICE */
+.player {
+  width: 420px;
+  background: #d9c2a3;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5),
+              0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* 🎞 CASSETTE SEARCH */
+.cassette {
+  background: #f5e6cc;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.cassette input {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* 🎵 VINYL */
+.vinyl-container {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  margin: 20px auto;
+}
+
+.vinyl {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #000 40%, #111 60%);
+  position: relative;
+}
+
+/* spinning */
+.spin {
+  animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* album dots */
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  position: absolute;
+  cursor: pointer;
+}
+
+.dot:hover {
+  transform: scale(1.5);
+}
+
+/* needle */
+.needle {
+  width: 120px;
+  height: 4px;
+  background: #ccc;
+  position: absolute;
+  top: 30px;
+  right: -20px;
+  transform-origin: left;
+  transform: rotate(-30deg);
+  transition: 0.5s;
+}
+
+.needle.drop {
+  transform: rotate(10deg);
+}
+
+/* 🎛 CONTROL PANEL */
+.controls {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.controls button {
+  margin: 5px;
+  padding: 10px;
+  border-radius: 50%;
+  border: none;
+  background: #222;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px #000;
+}
+
+.controls button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px #000;
+}
+
+/* progress */
+progress {
+  width: 80%;
+  margin-top: 10px;
+}
+
+/* NAV (TUNER) */
+nav {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-around;
+}
+
+nav span {
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+nav span.active {
+  background: black;
+  color: yellow;
+  border-radius: 10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="player">
+
+  <!-- 🎞 CASSETTE -->
+  <div class="cassette">
+    <input id="search" placeholder="Search song or artist...">
+  </div>
+
+  <!-- 🎵 VINYL -->
+  <div class="vinyl-container">
+    <div class="vinyl" id="vinyl">
+
+      <!-- album dots -->
+      <div class="dot" style="top:40%; left:70%; background:red"
+           onclick="playTrack('HIP HOP')"></div>
+
+      <div class="dot" style="top:60%; left:30%; background:yellow"
+           onclick="playTrack('DISCO')"></div>
+
+      <div class="dot" style="top:30%; left:40%; background:blue"
+           onclick="playTrack('POP')"></div>
+
+    </div>
+
+    <div class="needle" id="needle"></div>
+  </div>
+
+  <!-- 🎛 CONTROLS -->
+  <div class="controls">
+    <div id="nowPlaying">Now Playing: —</div>
+
+    <button onclick="play()">▶</button>
+    <button onclick="pause()">⏸</button>
+
+    <br>
+    <progress value="20" max="100"></progress>
+  </div>
+
+  <!-- 🎚 NAV -->
+  <nav>
+    <span class="active">SONGS</span>
+    <span>ARTISTS</span>
+    <span>ALBUMS</span>
+  </nav>
+
+</div>
+
+<script>
+const vinyl = document.getElementById("vinyl");
+const needle = document.getElementById("needle");
+const nowPlaying = document.getElementById("nowPlaying");
+
+/* PLAY TRACK FROM DOT */
+function playTrack(name) {
+  nowPlaying.innerText = "Now Playing: " + name;
+
+  vinyl.classList.add("spin");
+  needle.classList.add("drop");
+}
+
+/* PLAY BUTTON */
+function play() {
+  vinyl.classList.add("spin");
+  needle.classList.add("drop");
+}
+
+/* PAUSE */
+function pause() {
+  vinyl.classList.remove("spin");
+  needle.classList.remove("drop");
+}
+
+/* SEARCH (simple visual trigger) */
+document.getElementById("search").addEventListener("keydown", (e)=>{
+  if(e.key === "Enter"){
+    alert("Searching: " + e.target.value);
+  }
+});
+</script>
+
+</body>
+</html>
