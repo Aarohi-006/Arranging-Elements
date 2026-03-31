@@ -15,7 +15,6 @@ body {
   font-family: sans-serif;
 }
 
-/* MACHINE */
 .machine {
   width: 520px;
   height: 720px;
@@ -25,14 +24,12 @@ body {
   box-shadow: 0 0 40px #ff00cc;
 }
 
-/* DISPLAY */
 .display {
   background: #111;
   color: lime;
   padding: 15px;
   border-radius: 12px;
   text-align: center;
-  font-size: 18px;
 }
 
 /* GRID */
@@ -50,7 +47,6 @@ body {
   border-radius: 15px;
   padding: 10px;
   text-align: center;
-  transition: 0.2s;
 }
 
 .item img {
@@ -59,15 +55,8 @@ body {
   object-fit: contain;
 }
 
-.item p {
-  margin: 5px 0 0;
-  font-size: 14px;
-}
-
-/* ACTIVE */
 .item.active {
   outline: 4px solid red;
-  transform: scale(1.05);
 }
 
 /* CURSOR */
@@ -75,29 +64,26 @@ body {
   position: absolute;
   width: 25px;
   height: 25px;
-  background: radial-gradient(circle, red, darkred);
+  background: red;
   border-radius: 50%;
   border: 3px solid white;
   pointer-events: none;
-  transition: 0.15s;
-  box-shadow: 0 0 12px red;
+  box-shadow: 0 0 10px red;
 }
 
-/* FALLING */
+/* FALL */
 .falling {
   position: absolute;
   width: 120px;
   left: 50%;
   transform: translateX(-50%);
   animation: fall 1s ease forwards;
-  z-index: 10;
   text-align: center;
 }
 
 @keyframes fall {
-  0% { top: 0; transform: translateX(-50%) rotate(0deg); }
-  70% { top: 250px; transform: translateX(-50%) rotate(25deg); }
-  100% { top: 320px; transform: translateX(-50%) rotate(10deg); }
+  0% { top: 0; }
+  100% { top: 320px; }
 }
 
 /* TRAY */
@@ -107,9 +93,6 @@ body {
   padding: 15px;
   border-radius: 12px;
   color: white;
-  text-align: center;
-  font-size: 18px;
-  min-height: 50px;
 }
 </style>
 
@@ -119,46 +102,45 @@ body {
 
 <div class="machine">
 
-  <div class="display">
-    🎮 Use Arrow Keys + Enter
+<div class="display">🎮 Use Arrow Keys + Enter</div>
+
+<section class="grid" id="grid">
+
+  <div class="item" data-name="Doritos">
+    <img src="doritos.jpg">
+    <p>Doritos</p>
   </div>
 
-  <section class="grid" id="grid">
+  <div class="item" data-name="Snickers">
+    <img src="snickers.jpg">
+    <p>Snickers</p>
+  </div>
 
-    <div class="item" data-name="Doritos">
-      <img src="doritos.jpg">
-      <p>Doritos</p>
-    </div>
+  <div class="item" data-name="Sprite">
+    <img src="sprite.jpg">
+    <p>Sprite</p>
+  </div>
 
-    <div class="item" data-name="Snickers">
-      <img src="snickers.jpg">
-      <p>Snickers</p>
-    </div>
+  <div class="item" data-name="Lays">
+    <img src="lays.jpg">
+    <p>Lays</p>
+  </div>
 
-    <div class="item" data-name="Sprite">
-      <img src="sprite.jpg">
-      <p>Sprite</p>
-    </div>
+  <div class="item" data-name="Candy">
+    <img src="snickers.jpg">
+    <p>Candy</p>
+  </div>
 
-    <div class="item" data-name="Lays">
-      <img src="lays.jpg">
-      <p>Lays</p>
-    </div>
+  <div class="item" data-name="Chips">
+    <img src="doritos.jpg">
+    <p>Chips</p>
+  </div>
 
-    <div class="item" data-name="Candy">
-      <img src="snickers.jpg">
-      <p>Candy</p>
-    </div>
+  <div class="cursor" id="cursor"></div>
 
-    <div class="item" data-name="Chips">
-      <img src="doritos.jpg">
-      <p>Chips</p>
-    </div>
+</section>
 
-    <div class="cursor" id="cursor"></div>
-  </section>
-
-  <div class="tray" id="tray">Insert coin & select item</div>
+<div class="tray" id="tray">Insert coin & select item</div>
 
 </div>
 
@@ -171,16 +153,14 @@ const grid = document.getElementById("grid");
 let index = 0;
 const cols = 3;
 
-/* ENSURE KEYBOARD WORKS */
-window.focus();
+/* FIX: ALWAYS ENABLE KEYBOARD */
+document.body.addEventListener("click", () => window.focus());
 
-/* UPDATE CURSOR */
 function updateCursor() {
   items.forEach(i => i.classList.remove("active"));
   items[index].classList.add("active");
 
-  const item = items[index];
-  const rect = item.getBoundingClientRect();
+  const rect = items[index].getBoundingClientRect();
   const parent = grid.getBoundingClientRect();
 
   cursor.style.left = (rect.left - parent.left + rect.width/2 - 12) + "px";
@@ -189,8 +169,12 @@ function updateCursor() {
 
 updateCursor();
 
-/* JOYSTICK CONTROLS */
+/* JOYSTICK */
 window.addEventListener("keydown", (e) => {
+
+  if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Enter"].includes(e.key)) {
+    e.preventDefault();
+  }
 
   if (e.key === "ArrowRight") index++;
   if (e.key === "ArrowLeft") index--;
@@ -207,7 +191,6 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
-/* DISPENSE */
 function dispenseItem() {
   const item = items[index];
   const name = item.dataset.name;
@@ -215,10 +198,7 @@ function dispenseItem() {
 
   const falling = document.createElement("div");
   falling.className = "falling";
-  falling.innerHTML = `
-    <img src="${imgSrc}" style="width:90px"><br>
-    ${name}
-  `;
+  falling.innerHTML = `<img src="${imgSrc}" style="width:80px"><br>${name}`;
 
   grid.appendChild(falling);
 
@@ -231,3 +211,4 @@ function dispenseItem() {
 
 </body>
 </html>
+
