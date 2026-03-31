@@ -8,22 +8,43 @@
 body {
   margin: 0;
   height: 100vh;
+
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(#2D9CDB, #BEE9FF);
+
   font-family: sans-serif;
   text-align: center;
+
+  /* 🟦 BACKGROUND SKIN */
+  background: url("doraemon-bg.jpg") repeat;
+  background-size: 300px;
+}
+
+/* OVERLAY */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(45,156,219,0.2);
+  pointer-events: none;
+}
+
+/* GLASS CONTAINER */
+.ui-container {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(12px);
+  padding: 30px;
+  border-radius: 25px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
 }
 
 /* HEADER */
 .header img {
-  width: 130px;
-  margin-bottom: 10px;
+  width: 120px;
 }
 
-/* WRAPPER */
+/* DOOR */
 .door-wrapper {
   perspective: 1200px;
   position: relative;
@@ -35,7 +56,7 @@ body {
   position: relative;
 }
 
-/* 🌍 PORTAL */
+/* INSIDE */
 .inside {
   position: absolute;
   width: 100%;
@@ -46,7 +67,7 @@ body {
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.5s;
+  transition: 0.5s;
 }
 
 .inside.show {
@@ -62,7 +83,6 @@ body {
 .card {
   background: white;
   border-radius: 10px;
-  border: 2px solid #1F3A5F;
   padding: 8px;
   width: 90px;
   cursor: pointer;
@@ -73,7 +93,7 @@ body {
   border-radius: 8px;
 }
 
-/* 🚪 DOOR */
+/* DOOR */
 .door {
   position: absolute;
   width: 100%;
@@ -84,6 +104,7 @@ body {
   transform-origin: left;
   transition: transform 0.8s ease;
   z-index: 2;
+  box-shadow: 0 0 20px rgba(255,123,169,0.6);
 }
 
 .door.open {
@@ -100,7 +121,7 @@ body {
   bottom: 40px;
 }
 
-/* 🚁 COPTER */
+/* COPTER */
 .copter {
   position: absolute;
   width: 60px;
@@ -118,31 +139,31 @@ body {
 
 /* NAV */
 .nav {
-  margin-top: 40px;
+  margin-top: 30px;
   display: flex;
   gap: 30px;
 }
 
 .icon {
-  font-size: 22px;
+  font-size: 20px;
   animation: float 3s ease-in-out infinite;
   cursor: pointer;
 }
 
 @keyframes float {
-  0%,100% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-/* DETAIL VIEW */
+/* DETAIL */
 .detail img {
   width: 120px;
   border-radius: 10px;
 }
 
 .detail button {
-  padding: 8px 12px;
   margin-top: 10px;
+  padding: 8px 12px;
   border-radius: 20px;
   border: none;
   background: #FFD84D;
@@ -154,8 +175,10 @@ body {
 
 <body>
 
+<div class="ui-container">
+
 <div class="header">
-  <img src="./doraemon.gif">
+  <img src="doraemon.gif">
 </div>
 
 <h2>Anywhere Door</h2>
@@ -180,45 +203,41 @@ body {
   <div class="icon">🚁 Mountains</div>
 </div>
 
+</div>
+
 <script>
 const door = document.getElementById("door");
 const copter = document.getElementById("copter");
 const inside = document.getElementById("inside");
 
-/* DATA WITH IMAGES */
 const data = {
   Beach: [
     {name:"🏝 Bali", img:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e"},
-    {name:"🏖 Maldives", img:"https://images.unsplash.com/photo-1506744038136-46273834b3fb"},
-    {name:"🌊 Goa", img:"https://images.unsplash.com/photo-1501785888041-af3ef285b470"}
+    {name:"🏖 Maldives", img:"https://images.unsplash.com/photo-1506744038136-46273834b3fb"}
   ],
   City: [
     {name:"🏙 NYC", img:"https://images.unsplash.com/photo-1493244040629-496f6d136cc3"},
-    {name:"🏙 Tokyo", img:"https://images.unsplash.com/photo-1549692520-acc6669e2f0c"},
-    {name:"🏙 Paris", img:"https://images.unsplash.com/photo-1502602898657-3e91760cbb34"}
+    {name:"🏙 Tokyo", img:"https://images.unsplash.com/photo-1549692520-acc6669e2f0c"}
   ],
   Mountains: [
-    {name:"🏔 Swiss", img:"https://images.unsplash.com/photo-1501785888041-af3ef285b470"},
-    {name:"⛰ Himalayas", img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"},
-    {name:"🏔 Alps", img:"https://images.unsplash.com/photo-1464822759844-d150baec0494"}
+    {name:"🏔 Alps", img:"https://images.unsplash.com/photo-1464822759844-d150baec0494"},
+    {name:"⛰ Himalayas", img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"}
   ]
 };
 
 let pocket = [];
 
-const icons = document.querySelectorAll(".icon");
-
-icons.forEach(icon => {
+document.querySelectorAll(".icon").forEach(icon => {
   icon.addEventListener("click", () => {
 
-    const category = icon.textContent.trim().split(" ")[1];
+    const category = icon.textContent.split(" ")[1];
 
     inside.innerHTML = `
       <div>
         <h3>${category}</h3>
         <div class="results">
           ${data[category].map(place => `
-            <div class="card" onclick="expandPlace('${place.name}', '${place.img}')">
+            <div class="card" onclick="expandPlace('${place.name}','${place.img}')">
               <img src="${place.img}">
               <p>${place.name}</p>
             </div>
@@ -234,11 +253,9 @@ icons.forEach(icon => {
     setTimeout(() => copter.classList.add("fly"), 100);
     setTimeout(() => door.classList.add("open"), 600);
     setTimeout(() => inside.classList.add("show"), 900);
-
   });
 });
 
-/* DETAIL VIEW */
 function expandPlace(name, img) {
   inside.innerHTML = `
     <div class="detail">
@@ -247,16 +264,13 @@ function expandPlace(name, img) {
       <br>
       <button onclick="addToPocket('${name}')">🧳 Add to Pocket</button>
       <br>
-      <button onclick="history.back()">⬅ Back</button>
+      <button onclick="location.reload()">⬅ Back</button>
     </div>
   `;
 }
 
-/* POCKET */
 function addToPocket(place) {
-  if (!pocket.includes(place)) {
-    pocket.push(place);
-  }
+  if (!pocket.includes(place)) pocket.push(place);
   alert(place + " added to pocket 🧳");
 }
 </script>
