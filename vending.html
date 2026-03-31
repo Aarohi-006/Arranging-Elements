@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Arcade Vending Machine</title>
+
+<style>
+body {
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: sans-serif;
+}
+
+/* MACHINE */
+.machine {
+  width: 320px;
+  background: linear-gradient(145deg, #ff00cc, #3333ff);
+  border-radius: 25px;
+  padding: 15px;
+  box-shadow: 0 0 25px #ff00cc;
+}
+
+/* DISPLAY */
+.display {
+  background: #111;
+  color: lime;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+/* GRID */
+.grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.item {
+  background: white;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.item.active {
+  outline: 3px solid red;
+}
+
+/* FALLING ITEM */
+.falling {
+  position: absolute;
+  width: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: fall 1s ease-in forwards;
+  z-index: 10;
+}
+
+@keyframes fall {
+  0% { top: 0; transform: translateX(-50%) rotate(0deg); }
+  70% { top: 180px; transform: translateX(-50%) rotate(20deg); }
+  100% { top: 210px; transform: translateX(-50%) rotate(10deg); }
+}
+
+/* TRAY */
+.tray {
+  margin-top: 15px;
+  background: #222;
+  padding: 10px;
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  min-height: 40px;
+}
+
+/* JOYSTICK CURSOR */
+.cursor {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: red;
+  border-radius: 50%;
+  border: 2px solid white;
+  pointer-events: none;
+  transition: 0.2s;
+  box-shadow: 0 0 10px red;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="machine">
+
+  <!-- DISPLAY -->
+  <div class="display">
+    🕹 Use Arrow Keys + Enter
+  </div>
+
+  <!-- GRID -->
+  <section class="grid" id="grid">
+    <div class="item">Doritos</div>
+    <div class="item">Snickers</div>
+    <div class="item">Sprite</div>
+    <div class="item">Lays</div>
+    <div class="item">KitKat</div>
+    <div class="item">Fanta</div>
+
+    <div class="cursor" id="cursor"></div>
+  </section>
+
+  <!-- TRAY -->
+  <div class="tray" id="tray">Insert coin & select item</div>
+
+</div>
+
+<script>
+const items = document.querySelectorAll(".item");
+const cursor = document.getElementById("cursor");
+const tray = document.getElementById("tray");
+const grid = document.getElementById("grid");
+
+let index = 0;
+const cols = 3;
+
+/* POSITION CURSOR */
+function updateCursor() {
+  items.forEach(i => i.classList.remove("active"));
+  items[index].classList.add("active");
+
+  const item = items[index];
+  const rect = item.getBoundingClientRect();
+  const parent = item.parentElement.getBoundingClientRect();
+
+  cursor.style.left = (rect.left - parent.left + rect.width/2 - 10) + "px";
+  cursor.style.top = (rect.top - parent.top + rect.height/2 - 10) + "px";
+}
+
+updateCursor();
+
+/* KEY CONTROLS */
+document.addEventListener("keydown", (e) => {
+
+  if (e.key === "ArrowRight") index++;
+  if (e.key === "ArrowLeft") index--;
+  if (e.key === "ArrowDown") index += cols;
+  if (e.key === "ArrowUp") index -= cols;
+
+  if (index < 0) index = 0;
+  if (index >= items.length) index = items.length - 1;
+
+  updateCursor();
+
+  /* SELECT */
+  if (e.key === "Enter") {
+    dispenseItem(items[index].innerText);
+  }
+});
+
+/* DISPENSE WITH FALL */
+function dispenseItem(name) {
+
+  const falling = document.createElement("div");
+  falling.className = "falling";
+  falling.innerText = name;
+
+  grid.appendChild(falling);
+
+  setTimeout(() => {
+    tray.innerHTML = "🎉 You got " + name;
+    falling.remove();
+  }, 1000);
+}
+</script>
+
+</body>
+</html>
