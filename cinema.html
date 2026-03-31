@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cinema Khoj</title>
+
+<style>
+body {
+  margin: 0;
+  background: #7b0f0f;
+  font-family: serif;
+  color: white;
+  text-align: center;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 40px;
+  font-size: 28px;
+}
+
+/* 🎬 CLAPPERBOARD */
+.clapper {
+  width: 320px;
+  margin: auto;
+  perspective: 600px;
+}
+
+.flap {
+  background: black;
+  height: 40px;
+  transform-origin: top;
+  transition: 0.4s;
+}
+
+.clapper-body {
+  background: #eee;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.clapper input, .clapper select {
+  width: 90%;
+  margin: 5px 0;
+}
+
+/* FLAP ANIMATION */
+.clap {
+  transform: rotateX(-60deg);
+}
+
+/* 🎞 FILM STRIP */
+.film-container {
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.film-strip {
+  display: flex;
+  gap: 20px;
+  animation: scroll 10s linear infinite;
+}
+
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.frame {
+  background: #c9a66b;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.frame img {
+  width: 100px;
+  height: 150px;
+  cursor: pointer;
+}
+
+/* 🎟 TICKET */
+.ticket {
+  margin: 20px auto;
+  width: 260px;
+  background: #f5deb3;
+  color: black;
+  padding: 20px;
+  border-radius: 10px;
+  transition: transform 0.5s;
+}
+
+/* TEAR EFFECT */
+.torn {
+  transform: rotate(-5deg) scale(0.95);
+  opacity: 0.7;
+}
+
+/* 🍿 GENRE */
+.genres button {
+  margin: 10px;
+  padding: 10px;
+  border-radius: 20px;
+  background: #ffcc00;
+  border: none;
+}
+
+/* NAV */
+nav {
+  margin-top: 30px;
+}
+
+nav span {
+  margin: 0 15px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+  <div>Cinema</div>
+  <div>Khoj</div>
+</div>
+
+<!-- 🎬 CLAPPER -->
+<div class="clapper">
+  <div class="flap" id="flap"></div>
+
+  <div class="clapper-body">
+    <input id="search" placeholder="🎬 Search movie">
+    <select>
+      <option>Year</option>
+      <option>1990s</option>
+    </select>
+    <input placeholder="Actor / Director">
+  </div>
+</div>
+
+<!-- 🎞 FILM STRIP -->
+<div class="film-container">
+  <section class="film-strip">
+
+    <div class="frame" onclick="selectMovie('Mother India')">
+      <img src="https://upload.wikimedia.org/wikipedia/en/1/1c/Mother_India.jpg">
+    </div>
+
+    <div class="frame" onclick="selectMovie('Pyaasa')">
+      <img src="https://upload.wikimedia.org/wikipedia/en/7/70/Pyaasa.jpg">
+    </div>
+
+    <div class="frame" onclick="selectMovie('Guide')">
+      <img src="https://upload.wikimedia.org/wikipedia/en/5/5e/Guide1965.jpg">
+    </div>
+
+    <!-- DUPLICATE FOR LOOP EFFECT -->
+    <div class="frame">
+      <img src="https://upload.wikimedia.org/wikipedia/en/1/1c/Mother_India.jpg">
+    </div>
+
+    <div class="frame">
+      <img src="https://upload.wikimedia.org/wikipedia/en/7/70/Pyaasa.jpg">
+    </div>
+
+  </section>
+</div>
+
+<!-- 🎟 TICKET -->
+<aside class="ticket" id="ticket">
+  🎟 Select a movie
+</aside>
+
+<!-- 🍿 GENRE -->
+<div class="genres">
+  <button>🍿 Action</button>
+  <button>🍿 Romance</button>
+  <button>🍿 Drama</button>
+  <button>🍿 Comedy</button>
+</div>
+
+<!-- NAV -->
+<nav>
+  <span>💡 Films</span>
+  <span>🎞 Actors</span>
+  <span>🎵 Music</span>
+  <span>🎥 Directors</span>
+</nav>
+
+<script>
+
+/* 🎬 CLAPPER ANIMATION */
+const search = document.getElementById("search");
+const flap = document.getElementById("flap");
+
+search.addEventListener("keydown", () => {
+  flap.classList.add("clap");
+
+  setTimeout(() => {
+    flap.classList.remove("clap");
+  }, 300);
+});
+
+/* 🎟 TICKET ANIMATION */
+function selectMovie(movie) {
+  const ticket = document.getElementById("ticket");
+
+  ticket.classList.add("torn");
+
+  setTimeout(() => {
+    ticket.innerHTML = "🎟 " + movie + "<br>Details appear here";
+    ticket.classList.remove("torn");
+  }, 300);
+}
+
+</script>
+
+</body>
+</html>
