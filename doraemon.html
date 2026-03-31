@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Doraemon Portal UI</title>
+<title>Doraemon Anywhere Door UI</title>
 
 <style>
 body {
@@ -15,25 +15,34 @@ body {
   background: linear-gradient(#2D9CDB, #BEE9FF);
   font-family: sans-serif;
   text-align: center;
-  cursor: none;
-  perspective: 1000px;
 }
 
 /* HEADER GIF */
 .header img {
-  width: 150px;
+  width: 140px;
   margin-bottom: 10px;
 }
 
-/* 🚪 DOOR SYSTEM */
-.door-container {
-  position: relative;
-  width: 320px;
-  height: 200px;
+/* TITLE */
+h1 {
+  margin-bottom: 20px;
 }
 
-/* PORTAL (behind) */
-.portal {
+/* WRAPPER */
+.door-wrapper {
+  perspective: 1200px;
+  position: relative;
+}
+
+/* FRAME */
+.door-frame {
+  width: 320px;
+  height: 200px;
+  position: relative;
+}
+
+/* 🌍 INSIDE PORTAL */
+.inside {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -42,42 +51,44 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
   opacity: 0;
   transition: opacity 0.5s;
 }
 
-.portal.show {
+/* SHOW */
+.inside.show {
   opacity: 1;
 }
 
-/* DOOR */
+/* RESULTS */
+.results {
+  display: flex;
+  gap: 10px;
+}
+
+.card {
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  border: 2px solid #1F3A5F;
+}
+
+/* 🚪 DOOR */
 .door {
+  position: absolute;
   width: 100%;
   height: 100%;
   background: #FF7BA9;
   border-radius: 20px;
   border: 5px solid #1F3A5F;
-  position: absolute;
-  transform-origin: left center;
+  transform-origin: left;
   transition: transform 0.8s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 2;
 }
 
-/* OPEN FULL */
+/* OPEN */
 .door.open {
-  transform: rotateY(-110deg);
-}
-
-.door input {
-  width: 70%;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  text-align: center;
+  transform: rotateY(-120deg);
 }
 
 /* KNOB */
@@ -87,19 +98,28 @@ body {
   background: #1F3A5F;
   border-radius: 50%;
   position: absolute;
-  right: 12px;
-  bottom: 30px;
+  right: 15px;
+  bottom: 40px;
 }
 
-/* 🌍 CARDS */
-.card {
-  background: white;
-  padding: 15px;
-  border-radius: 15px;
-  border: 3px solid #1F3A5F;
+/* 🚁 COPTER */
+.copter {
+  position: absolute;
+  width: 60px;
+  bottom: 20%;
+  left: 10%;
+  transition: all 1s ease;
 }
 
-/* 🚁 FLOAT ICONS */
+/* FLY */
+.copter.fly {
+  bottom: 50%;
+  left: 45%;
+  transform: scale(0.3);
+  opacity: 0;
+}
+
+/* FLOATING CATEGORY ICONS */
 .nav {
   margin-top: 40px;
   display: flex;
@@ -111,113 +131,80 @@ body {
   animation: float 3s ease-in-out infinite;
 }
 
+.icon:nth-child(2) { animation-delay: 0.5s; }
+.icon:nth-child(3) { animation-delay: 1s; }
+
 @keyframes float {
   0%,100% { transform: translateY(0px); }
   50% { transform: translateY(-15px); }
 }
-
-/* 🚁 DORAEMON COPTER CURSOR */
-.cursor {
-  position: fixed;
-  width: 30px;
-  height: 30px;
-  background: red;
-  border-radius: 50%;
-  pointer-events: none;
-  box-shadow: 0 0 10px yellow;
-}
-
-/* propeller */
-.cursor::before {
-  content: "";
-  position: absolute;
-  width: 40px;
-  height: 6px;
-  background: yellow;
-  top: -10px;
-  left: -5px;
-  border-radius: 5px;
-  animation: spin 0.2s linear infinite;
-}
-
-/* center rod */
-.cursor::after {
-  content: "";
-  position: absolute;
-  width: 4px;
-  height: 10px;
-  background: #333;
-  top: -6px;
-  left: 13px;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
 </style>
+
 </head>
 
 <body>
 
 <!-- HEADER -->
 <div class="header">
-  <img src="./doraemon.gif">
+  <img src="./doraemon.gif" alt="Doraemon">
 </div>
 
-<h2>Anywhere Door</h2>
+<h1>Anywhere Door</h1>
 
-<!-- DOOR -->
-<div class="door-container">
+<!-- DOOR SYSTEM -->
+<div class="door-wrapper">
 
-  <div class="portal" id="portal">
-    <div class="card">🏝 Bali</div>
-    <div class="card">🏔 Swiss</div>
-    <div class="card">🏙 NYC</div>
-  </div>
+  <div class="door-frame">
 
-  <div class="door" id="door">
-    <input type="text" placeholder="Where to go?">
-    <div class="knob"></div>
+    <!-- 🌍 INSIDE -->
+    <div class="inside" id="inside">
+      <div class="results">
+        <div class="card">🏝 Bali</div>
+        <div class="card">🏔 Swiss</div>
+        <div class="card">🏙 NYC</div>
+      </div>
+    </div>
+
+    <!-- 🚪 DOOR -->
+    <div class="door" id="door">
+      <div class="knob"></div>
+    </div>
+
   </div>
 
 </div>
 
-<!-- NAV -->
+<!-- 🚁 COPTER -->
+<img src="copter.png" class="copter" id="copter">
+
+<!-- FLOATING ICONS -->
 <div class="nav">
   <div class="icon">🚁 Beach</div>
   <div class="icon">🚁 City</div>
   <div class="icon">🚁 Mountains</div>
 </div>
 
-<!-- CURSOR -->
-<div class="cursor"></div>
-
 <script>
 const door = document.getElementById("door");
-const portal = document.getElementById("portal");
-const input = document.querySelector("input");
+const copter = document.getElementById("copter");
+const inside = document.getElementById("inside");
 
-/* OPEN DOOR */
-input.addEventListener("focus", () => {
-  door.classList.add("open");
-  portal.classList.add("show");
-});
+/* CLICK INTERACTION */
+door.addEventListener("click", () => {
 
-/* CLOSE */
-document.addEventListener("click", (e) => {
-  if (!door.contains(e.target)) {
-    door.classList.remove("open");
-    portal.classList.remove("show");
-  }
-});
+  // Copter flies
+  copter.classList.add("fly");
 
-/* CURSOR FOLLOW */
-const cursor = document.querySelector(".cursor");
+  // Door opens
+  setTimeout(() => {
+    door.classList.add("open");
+  }, 600);
 
-document.addEventListener("mousemove", (e) => {
-  cursor.style.left = e.clientX + "px";
-  cursor.style.top = e.clientY + "px";
+  // Show results
+  setTimeout(() => {
+    inside.classList.add("show");
+  }, 900);
+
 });
 </script>
 
