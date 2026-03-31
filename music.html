@@ -15,7 +15,7 @@ body {
   height: 100vh;
 }
 
-/* MAIN DEVICE */
+/* MAIN PLAYER */
 .player {
   width: 420px;
   background: #d9c2a3;
@@ -25,12 +25,11 @@ body {
               0 10px 30px rgba(0,0,0,0.4);
 }
 
-/* 🎞 CASSETTE SEARCH */
+/* 🎞 CASSETTE */
 .cassette {
   background: #f5e6cc;
   padding: 10px;
   border-radius: 10px;
-  margin-bottom: 15px;
 }
 
 .cassette input {
@@ -54,10 +53,9 @@ body {
   height: 100%;
   border-radius: 50%;
   background: radial-gradient(circle, #000 40%, #111 60%);
-  position: relative;
 }
 
-/* spinning */
+/* spin */
 .spin {
   animation: spin 3s linear infinite;
 }
@@ -97,10 +95,9 @@ body {
   transform: rotate(10deg);
 }
 
-/* 🎛 CONTROL PANEL */
+/* 🎛 CONTROLS */
 .controls {
   text-align: center;
-  margin-top: 15px;
 }
 
 .controls button {
@@ -119,13 +116,31 @@ body {
   box-shadow: 0 2px #000;
 }
 
-/* progress */
 progress {
   width: 80%;
   margin-top: 10px;
 }
 
-/* NAV (TUNER) */
+/* 📋 LIST PANEL */
+.list-panel {
+  background: #111;
+  color: #0f0;
+  font-size: 14px;
+  padding: 10px;
+  height: 120px;
+  overflow-y: auto;
+  margin-top: 10px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.list-panel div:hover {
+  background: #0f0;
+  color: black;
+  cursor: pointer;
+}
+
+/* 🎚 NAV */
 nav {
   margin-top: 15px;
   display: flex;
@@ -142,7 +157,6 @@ nav span.active {
   color: yellow;
   border-radius: 10px;
 }
-
 </style>
 </head>
 
@@ -159,7 +173,6 @@ nav span.active {
   <div class="vinyl-container">
     <div class="vinyl" id="vinyl">
 
-      <!-- album dots -->
       <div class="dot" style="top:40%; left:70%; background:red"
            onclick="playTrack('HIP HOP')"></div>
 
@@ -185,6 +198,11 @@ nav span.active {
     <progress value="20" max="100"></progress>
   </div>
 
+  <!-- 📋 LIST PANEL -->
+  <section class="list-panel" id="listPanel">
+    Select a category 🎵
+  </section>
+
   <!-- 🎚 NAV -->
   <nav>
     <span class="active">SONGS</span>
@@ -198,31 +216,73 @@ nav span.active {
 const vinyl = document.getElementById("vinyl");
 const needle = document.getElementById("needle");
 const nowPlaying = document.getElementById("nowPlaying");
+const listPanel = document.getElementById("listPanel");
 
-/* PLAY TRACK FROM DOT */
+/* DATA */
+const categories = [
+  "🔵 POP ALBUM",
+  "🟣 ROCK ALBUM",
+  "🟡 DISCO",
+  "🟢 INDIE",
+  "🔴 HIP HOP"
+];
+
+/* PLAY TRACK */
 function playTrack(name) {
   nowPlaying.innerText = "Now Playing: " + name;
-
   vinyl.classList.add("spin");
   needle.classList.add("drop");
 }
 
-/* PLAY BUTTON */
+/* BUTTONS */
 function play() {
   vinyl.classList.add("spin");
   needle.classList.add("drop");
 }
 
-/* PAUSE */
 function pause() {
   vinyl.classList.remove("spin");
   needle.classList.remove("drop");
 }
 
-/* SEARCH (simple visual trigger) */
+/* NAV INTERACTION */
+document.querySelectorAll("nav span").forEach(tab => {
+  tab.addEventListener("click", () => {
+
+    document.querySelectorAll("nav span").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+
+    const type = tab.innerText;
+
+    if (type === "SONGS") {
+      listPanel.innerHTML = categories.map(c => 
+        `<div onclick="playTrack('${c}')">${c}</div>`
+      ).join("");
+    }
+
+    if (type === "ARTISTS") {
+      listPanel.innerHTML = `
+        <div onclick="playTrack('Michael Jackson')">Michael Jackson</div>
+        <div onclick="playTrack('Madonna')">Madonna</div>
+        <div onclick="playTrack('Queen')">Queen</div>
+      `;
+    }
+
+    if (type === "ALBUMS") {
+      listPanel.innerHTML = `
+        <div onclick="playTrack('Thriller')">Thriller</div>
+        <div onclick="playTrack('Like a Virgin')">Like a Virgin</div>
+        <div onclick="playTrack('Back in Black')">Back in Black</div>
+      `;
+    }
+
+  });
+});
+
+/* SEARCH */
 document.getElementById("search").addEventListener("keydown", (e)=>{
   if(e.key === "Enter"){
-    alert("Searching: " + e.target.value);
+    listPanel.innerHTML = "Searching: " + e.target.value;
   }
 });
 </script>
