@@ -7,10 +7,15 @@
 <style>
 body {
   margin: 0;
-  background: radial-gradient(circle, #5a2a82, #2d0b4e);
   font-family: serif;
   overflow: hidden;
   color: white;
+
+  /* 🟣 MAGIC BACKGROUND */
+  background: radial-gradient(circle at top, #7b2cbf, #3c096c 60%, #240046);
+
+  /* 🧞 GENIE CURSOR */
+  cursor: url('genie-cursor.png'), auto;
 }
 
 /* 🟣 SEARCH CLOUD */
@@ -42,7 +47,7 @@ body {
 /* 🧞 CARPET */
 .carpet {
   position: absolute;
-  bottom: 50px;
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
   width: 500px;
@@ -52,7 +57,7 @@ body {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+  box-shadow: 0 0 40px rgba(0,0,0,0.6);
 }
 
 /* 🏺 STALLS */
@@ -69,7 +74,7 @@ body {
 /* 📜 SCROLL */
 .scroll {
   position: absolute;
-  bottom: 320px;
+  bottom: 350px;
   left: 50%;
   transform: translateX(-50%) scaleY(0);
   transform-origin: top;
@@ -86,28 +91,20 @@ body {
   transform: translateX(-50%) scaleY(1);
 }
 
-/* 🧞 GENIE CURSOR */
-.genie {
-  position: absolute;
-  width: 60px;
-  pointer-events: none;
-  transition: transform 0.1s;
-}
-
 /* ✨ SMOKE */
 .smoke {
   position: absolute;
-  width: 10px;
-  height: 10px;
-  background: rgba(200,200,255,0.5);
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle, rgba(200,200,255,0.8), transparent);
   border-radius: 50%;
   pointer-events: none;
-  animation: fade 1s forwards;
+  animation: smokeFade 0.8s forwards;
 }
 
-@keyframes fade {
+@keyframes smokeFade {
   to {
-    transform: scale(3);
+    transform: scale(2.5);
     opacity: 0;
   }
 }
@@ -135,6 +132,11 @@ nav span {
   <input placeholder="✨ What do you seek?">
 </div>
 
+<!-- 📜 SCROLL -->
+<aside class="scroll" id="scroll">
+  Magical item appears...
+</aside>
+
 <!-- 🧞 CARPET -->
 <section class="carpet">
   <div class="stall" onclick="showItem('Spices 🏺')">🏺<br>SPICES</div>
@@ -142,43 +144,42 @@ nav span {
   <div class="stall" onclick="showItem('Fabrics 🧵')">🧵<br>FABRICS</div>
 </section>
 
-<!-- 📜 SCROLL -->
-<aside class="scroll" id="scroll">
-  Magical item appears...
-</aside>
-
-<!-- 🧞 GENIE -->
-<img src="https://i.imgur.com/6X4QZ5b.png" class="genie" id="genie">
-
 <!-- NAV -->
 <nav>
   🌍 Africa | 🏜 Middle East | 🌏 Asia | 🌍 Europe
 </nav>
 
 <script>
-const genie = document.getElementById("genie");
 const scroll = document.getElementById("scroll");
-
-/* 🧞 FOLLOW CURSOR */
-document.addEventListener("mousemove", e => {
-  genie.style.left = e.pageX + "px";
-  genie.style.top = e.pageY + "px";
-
-  /* smoke trail */
-  const smoke = document.createElement("div");
-  smoke.className = "smoke";
-  smoke.style.left = e.pageX + "px";
-  smoke.style.top = e.pageY + "px";
-  document.body.appendChild(smoke);
-
-  setTimeout(() => smoke.remove(), 1000);
-});
 
 /* 📜 SHOW ITEM */
 function showItem(item) {
   scroll.innerHTML = "🧞 " + item + "<br>A treasure worthy of a sultan!";
   scroll.classList.add("show");
 }
+
+/* ✨ SMOKE TRAIL */
+let lastSmokeTime = 0;
+
+document.addEventListener("mousemove", e => {
+
+  const now = Date.now();
+
+  if (now - lastSmokeTime > 60) {
+
+    const smoke = document.createElement("div");
+    smoke.className = "smoke";
+
+    smoke.style.left = e.pageX + "px";
+    smoke.style.top = e.pageY + "px";
+
+    document.body.appendChild(smoke);
+
+    setTimeout(() => smoke.remove(), 800);
+
+    lastSmokeTime = now;
+  }
+});
 </script>
 
 </body>
