@@ -16,7 +16,6 @@ body {
   font-family: sans-serif;
   text-align: center;
 
-  /* 🟦 BACKGROUND SKIN */
   background: url("doraemon-bg.jpg") repeat;
   background-size: 300px;
 }
@@ -144,15 +143,24 @@ body::before {
   gap: 30px;
 }
 
+/* 🔔 LOCKET ICON */
 .icon {
-  font-size: 20px;
-  animation: float 3s ease-in-out infinite;
   cursor: pointer;
+  text-align: center;
 }
 
-@keyframes float {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+.icon img {
+  width: 40px;
+  height: 40px;
+
+  /* remove white background */
+  mix-blend-mode: multiply;
+  transition: 0.3s;
+}
+
+.icon:hover img {
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 10px yellow);
 }
 
 /* DETAIL */
@@ -197,10 +205,17 @@ body::before {
 
 <img src="copter.png" class="copter" id="copter">
 
+<!-- 🔔 UPDATED NAV -->
 <div class="nav">
-  <div class="icon">🚁 Beach</div>
-  <div class="icon">🚁 City</div>
-  <div class="icon">🚁 Mountains</div>
+  <div class="icon">
+    <img src="locket.png"><br>Beach
+  </div>
+  <div class="icon">
+    <img src="locket.png"><br>City
+  </div>
+  <div class="icon">
+    <img src="locket.png"><br>Mountains
+  </div>
 </div>
 
 </div>
@@ -216,21 +231,22 @@ const data = {
     {name:"🏖 Maldives", img:"https://images.unsplash.com/photo-1506744038136-46273834b3fb"}
   ],
   City: [
-    {name:"🏙 NYC", img:"timo-wagner-fT6-YkB0nfg-unsplash.jpg"},
+    {name:"🏙 NYC", img:"https://images.unsplash.com/photo-1493244040629-496f6d136cc3"},
     {name:"🏙 Tokyo", img:"https://images.unsplash.com/photo-1549692520-acc6669e2f0c"}
   ],
   Mountains: [
-    {name:"🏔 Alps", img:"simon-fitall-xWxh7hsgJVA-unsplash.jpg"},
+    {name:"🏔 Alps", img:"https://images.unsplash.com/photo-1464822759844-d150baec0494"},
     {name:"⛰ Himalayas", img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"}
   ]
 };
 
 let pocket = [];
 
+/* 🔔 FIXED CATEGORY LOGIC */
 document.querySelectorAll(".icon").forEach(icon => {
   icon.addEventListener("click", () => {
 
-    const category = icon.textContent.split(" ")[1];
+    const category = icon.innerText.trim();
 
     inside.innerHTML = `
       <div>
