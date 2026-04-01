@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Genie Bazaar Premium UI</title>
 
-<!-- 👑 FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
@@ -19,7 +18,7 @@ body {
   cursor: url('genie-cursor.png') 16 16, auto;
 }
 
-/* ⭐ STARS */
+/* ⭐ BACKGROUND STARS */
 body::after {
   content: "";
   position: fixed;
@@ -96,9 +95,7 @@ body::after {
   background: linear-gradient(#9d4edd, #5a189a);
   border: 2px solid gold;
 
-  /* 🕌 ARCH SHAPE */
   border-radius: 50% 50% 20% 20%;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -107,7 +104,7 @@ body::after {
   position: relative;
 }
 
-/* ✨ SHIMMER */
+/* SHIMMER */
 .stall::after {
   content: "";
   position: absolute;
@@ -133,7 +130,7 @@ body::after {
   transform: scale(1.1);
 }
 
-/* 📜 SCROLL */
+/* SCROLL */
 .scroll {
   position: absolute;
   top: -20px;
@@ -150,7 +147,6 @@ body::after {
   transform-origin: top;
   transition: 0.5s;
   text-align: center;
-
   line-height: 1.6;
 }
 
@@ -158,7 +154,7 @@ body::after {
   transform: translateX(-50%) scaleY(1);
 }
 
-/* 🧞 GENIE */
+/* GENIE */
 .genie {
   position: absolute;
   top: -120px;
@@ -200,6 +196,7 @@ nav span {
 nav span.active {
   background: gold;
   color: black;
+  box-shadow: 0 0 10px gold;
 }
 
 /* SMOKE */
@@ -243,11 +240,12 @@ nav span.active {
 
 <button class="wish-btn" id="wishBtn">✨ Grant Wish</button>
 
+<!-- ✅ FIXED NAV -->
 <nav>
-  <span class="active">Asia</span>
-  <span>Africa</span>
-  <span>Europe</span>
-  <span>Middle East</span>
+  <span class="active" data-region="Asia">Asia</span>
+  <span data-region="Africa">Africa</span>
+  <span data-region="Europe">Europe</span>
+  <span data-region="Middle East">Middle East</span>
 </nav>
 
 </div>
@@ -296,12 +294,12 @@ stalls.forEach(stall => {
   });
 });
 
-/* NAV */
+/* ✅ FIXED NAV */
 navItems.forEach(nav => {
   nav.addEventListener("click", () => {
     navItems.forEach(n => n.classList.remove("active"));
     nav.classList.add("active");
-    currentRegion = nav.innerText;
+    currentRegion = nav.dataset.region;
   });
 });
 
@@ -320,6 +318,7 @@ btn.addEventListener("click", () => {
     if (!selected) {
       scroll.innerHTML = "🧞 Choose an item first!";
     } else {
+
       const result = data[currentRegion][selected];
 
       scroll.innerHTML = `
