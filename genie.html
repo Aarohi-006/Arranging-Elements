@@ -10,130 +10,55 @@
 body {
   margin: 0;
   font-family: 'Cinzel', serif;
-  letter-spacing: 1px;
-  overflow: hidden;
+  background: #2b0a3d;
   color: white;
-
-  background: radial-gradient(circle at top, #9d4edd, #3c096c 60%, #240046);
-  cursor: url('genie-cursor.png') 16 16, auto;
+  overflow: hidden;
 }
 
-/* ⭐ BACKGROUND STARS */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image: radial-gradient(white 1px, transparent 1px);
-  background-size: 40px 40px;
-  opacity: 0.15;
-  pointer-events: none;
-}
-
-/* 🧞 CARPET */
+/* MAIN UI */
 .container {
-  width: 750px;
-  margin: 80px auto;
-  padding: 30px;
-
-  background: radial-gradient(#8b1e3f, #3a0c1d);
-  border: 6px double gold;
-  border-radius: 60px 60px 40px 40px;
-
-  box-shadow: 0 0 40px rgba(0,0,0,0.6),
-              inset 0 0 30px rgba(0,0,0,0.5);
-
+  width: 900px;
+  margin: 40px auto;
   position: relative;
-  z-index: 1;
-
-  animation: floatCarpet 4s ease-in-out infinite;
-}
-
-@keyframes floatCarpet {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-/* ✨ MAGIC BURST */
-.container.flash {
-  animation: flash 0.4s;
-}
-
-@keyframes flash {
-  0% { box-shadow: 0 0 10px white, 0 0 40px gold; }
-  100% { box-shadow: none; }
-}
-
-/* TITLE */
-.titlebar {
   text-align: center;
-  font-size: 22px;
-  margin-bottom: 15px;
 }
 
-/* SEARCH */
-.search-cloud {
-  background: radial-gradient(circle, #c77dff, #7b2cbf);
-  padding: 15px;
-  border-radius: 40px;
-  border: 2px solid gold;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-/* STALLS */
-.carpet-items {
-  display: flex;
-  justify-content: space-around;
-}
-
-.stall {
-  width: 120px;
-  height: 140px;
-  text-align: center;
-  cursor: pointer;
-
-  background: linear-gradient(#9d4edd, #5a189a);
-  border: 2px solid gold;
-
-  border-radius: 50% 50% 20% 20%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  transition: 0.3s;
-  position: relative;
-}
-
-/* SHIMMER */
-.stall::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
+/* YOUR IMAGE */
+.ui-image {
   width: 100%;
-  height: 100%;
-  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
-  transition: 0.5s;
+  border-radius: 20px;
+  display: block;
 }
 
-.stall:hover::after {
-  left: 100%;
+/* HOTSPOTS */
+.hotspot {
+  position: absolute;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: 0.2s;
 }
 
-.stall:hover {
-  transform: translateY(-10px) scale(1.1);
+/* POSITIONED OVER YOUR DESIGN */
+.spices { top: 140px; left: 110px; width: 200px; height: 230px; }
+.jewels { top: 140px; left: 350px; width: 200px; height: 230px; }
+.fabrics { top: 140px; left: 600px; width: 200px; height: 230px; }
+
+/* HOVER */
+.hotspot:hover {
+  outline: 3px solid gold;
+  box-shadow: 0 0 20px gold;
 }
 
 /* ACTIVE */
-.stall.active {
-  box-shadow: 0 0 25px gold, 0 0 50px purple;
-  transform: scale(1.1);
+.hotspot.active {
+  outline: 4px solid gold;
+  box-shadow: 0 0 30px gold;
 }
 
 /* SCROLL */
 .scroll {
   position: absolute;
-  top: -20px;
+  top: 10px;
   left: 50%;
   transform: translateX(-50%) scaleY(0);
 
@@ -145,9 +70,8 @@ body::after {
 
   border-radius: 10px;
   transform-origin: top;
-  transition: 0.5s;
-  text-align: center;
-  line-height: 1.6;
+  transition: 0.4s;
+  z-index: 2;
 }
 
 .scroll.show {
@@ -157,11 +81,12 @@ body::after {
 /* GENIE */
 .genie {
   position: absolute;
-  top: -120px;
+  top: -80px;
   left: 50%;
   transform: translateX(-50%) scale(0);
-  width: 80px;
-  transition: 0.5s;
+  width: 90px;
+  transition: 0.4s;
+  z-index: 3;
 }
 
 .genie.show {
@@ -170,19 +95,18 @@ body::after {
 
 /* BUTTON */
 .wish-btn {
-  display: block;
-  margin: 20px auto;
+  margin-top: 20px;
   padding: 10px 20px;
-
   background: gold;
   border: none;
   border-radius: 20px;
   cursor: pointer;
+  font-family: 'Cinzel';
 }
 
 /* NAV */
 nav {
-  text-align: center;
+  margin-top: 20px;
 }
 
 nav span {
@@ -198,24 +122,6 @@ nav span.active {
   color: black;
   box-shadow: 0 0 10px gold;
 }
-
-/* SMOKE */
-.smoke {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  background: radial-gradient(circle, rgba(180,150,255,0.9), transparent);
-  border-radius: 50%;
-  pointer-events: none;
-  animation: smoke 0.8s forwards;
-}
-
-@keyframes smoke {
-  to {
-    transform: scale(2.5);
-    opacity: 0;
-  }
-}
 </style>
 </head>
 
@@ -223,24 +129,20 @@ nav span.active {
 
 <div class="container">
 
-<div class="titlebar">🧞 GENIE GLOBAL BAZAAR</div>
-
-<div class="search-cloud">
-  <input placeholder="✨ What do you seek?">
-</div>
-
 <img src="genie.png" class="genie" id="genie">
+
 <div class="scroll" id="scroll"></div>
 
-<section class="carpet-items">
-  <div class="stall">🏺<br>SPICES</div>
-  <div class="stall">💎<br>JEWELS</div>
-  <div class="stall">🧵<br>FABRICS</div>
-</section>
+<!-- YOUR UI IMAGE -->
+<img src="bazaar.png" class="ui-image">
+
+<!-- HOTSPOTS -->
+<div class="hotspot spices" data-item="SPICES"></div>
+<div class="hotspot jewels" data-item="JEWELS"></div>
+<div class="hotspot fabrics" data-item="FABRICS"></div>
 
 <button class="wish-btn" id="wishBtn">✨ Grant Wish</button>
 
-<!-- ✅ FIXED NAV -->
 <nav>
   <span class="active" data-region="Asia">Asia</span>
   <span data-region="Africa">Africa</span>
@@ -251,12 +153,11 @@ nav span.active {
 </div>
 
 <script>
-const stalls = document.querySelectorAll(".stall");
+const hotspots = document.querySelectorAll(".hotspot");
 const scroll = document.getElementById("scroll");
 const genie = document.getElementById("genie");
 const btn = document.getElementById("wishBtn");
 const navItems = document.querySelectorAll("nav span");
-const container = document.querySelector(".container");
 
 let selected = "";
 let currentRegion = "Asia";
@@ -285,16 +186,16 @@ const data = {
   }
 };
 
-/* STALL SELECT */
-stalls.forEach(stall => {
-  stall.addEventListener("click", () => {
-    stalls.forEach(s => s.classList.remove("active"));
-    stall.classList.add("active");
-    selected = stall.innerText.split("\n")[1];
+/* SELECT STALL */
+hotspots.forEach(h => {
+  h.addEventListener("click", () => {
+    hotspots.forEach(x => x.classList.remove("active"));
+    h.classList.add("active");
+    selected = h.dataset.item;
   });
 });
 
-/* ✅ FIXED NAV */
+/* NAV */
 navItems.forEach(nav => {
   nav.addEventListener("click", () => {
     navItems.forEach(n => n.classList.remove("active"));
@@ -303,53 +204,23 @@ navItems.forEach(nav => {
   });
 });
 
-/* GRANT WISH */
+/* BUTTON */
 btn.addEventListener("click", () => {
 
-  scroll.classList.remove("show");
-  genie.classList.remove("show");
+  if (!selected) {
+    scroll.innerHTML = "🧞 Select a stall first!";
+  } else {
+    const result = data[currentRegion][selected];
 
-  container.classList.add("flash");
-
-  setTimeout(() => {
-
-    container.classList.remove("flash");
-
-    if (!selected) {
-      scroll.innerHTML = "🧞 Choose an item first!";
-    } else {
-
-      const result = data[currentRegion][selected];
-
-      scroll.innerHTML = `
-        🧞 ${selected} from ${currentRegion}<br><br>
-        📍 ${result.bazaar}<br>
-        ✨ ${result.items}
-      `;
-    }
-
-    scroll.classList.add("show");
-    genie.classList.add("show");
-
-  }, 300);
-});
-
-/* SMOKE */
-let last = 0;
-document.addEventListener("mousemove", e => {
-  const now = Date.now();
-  if (now - last > 50) {
-
-    const s = document.createElement("div");
-    s.className = "smoke";
-    s.style.left = e.pageX + "px";
-    s.style.top = e.pageY + "px";
-
-    document.body.appendChild(s);
-    setTimeout(() => s.remove(), 800);
-
-    last = now;
+    scroll.innerHTML = `
+      🧞 ${selected} from ${currentRegion}<br><br>
+      📍 ${result.bazaar}<br>
+      ✨ ${result.items}
+    `;
   }
+
+  scroll.classList.add("show");
+  genie.classList.add("show");
 });
 </script>
 
