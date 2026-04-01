@@ -18,60 +18,31 @@ body {
 /* MACHINE */
 .machine {
   width: 540px;
-  height: 760px;
   background: linear-gradient(145deg, #ff00cc, #3333ff);
   border-radius: 30px;
   padding: 20px;
   box-shadow: 0 0 40px #ff00cc;
 }
 
-/* 🎞 CRT SCREEN */
+/* SCREEN */
 .display {
-  position: relative;
   background: #000;
   color: lime;
   padding: 15px;
   border-radius: 12px;
   text-align: center;
-  overflow: hidden;
+  margin-bottom: 10px;
 }
 
-/* scanlines */
-.display::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(255,255,255,0.05) 0px,
-    rgba(255,255,255,0.05) 1px,
-    transparent 2px
-  );
-  pointer-events: none;
-}
-
-/* curvature glow */
-.display::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  box-shadow: inset 0 0 40px rgba(0,255,0,0.3);
-  pointer-events: none;
-}
-
-/* 🪙 COIN SLOT */
-.coin-slot {
-  margin-top: 10px;
+/* LED */
+.led {
+  background: #111;
+  color: #00ff00;
+  font-size: 28px;
   text-align: center;
-}
-
-.coin-btn {
-  padding: 8px 16px;
-  border-radius: 20px;
-  border: none;
-  background: gold;
-  cursor: pointer;
-  font-weight: bold;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
 }
 
 /* GRID */
@@ -80,7 +51,6 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
-  margin: 20px 0;
 }
 
 /* ITEMS */
@@ -89,52 +59,55 @@ body {
   border-radius: 15px;
   padding: 10px;
   text-align: center;
+  transition: 0.2s;
 }
 
 .item img {
   width: 100%;
-  height: 100px;
+  height: 90px;
   object-fit: contain;
 }
 
+/* ACTIVE ITEM */
 .item.active {
   outline: 4px solid red;
+  transform: scale(1.05);
 }
 
-/* CURSOR */
-.cursor {
-  position: absolute;
-  width: 25px;
-  height: 25px;
-  background: red;
-  border-radius: 50%;
-  border: 3px solid white;
-  pointer-events: none;
-  box-shadow: 0 0 10px red;
+/* KEYPAD */
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 15px;
 }
 
-/* FALL */
-.falling {
-  position: absolute;
-  width: 120px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: fall 1s ease forwards;
-  text-align: center;
+.keypad button {
+  padding: 15px;
+  font-size: 18px;
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-@keyframes fall {
-  0% { top: 0; }
-  100% { top: 320px; }
+/* COIN */
+.coin-btn {
+  margin: 10px 0;
+  padding: 10px;
+  background: gold;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
 }
 
 /* TRAY */
 .tray {
-  margin-top: 20px;
+  margin-top: 15px;
   background: #222;
   padding: 15px;
   border-radius: 12px;
-  color: white;
   text-align: center;
 }
 </style>
@@ -145,94 +118,93 @@ body {
 
 <div class="machine">
 
-<div class="display" id="display">
-  INSERT COIN TO START
-</div>
+<div class="display" id="display">INSERT COIN</div>
 
-<div class="coin-slot">
-  <button class="coin-btn" onclick="insertCoin()">🪙 Insert Coin</button>
-</div>
+<button class="coin-btn" onclick="insertCoin()">🪙 Insert Coin</button>
+
+<div class="led" id="led">A1</div>
 
 <section class="grid" id="grid">
 
-  <div class="item" data-name="Doritos">
+  <div class="item" data-code="A1" data-name="Doritos">
     <img src="doritos.jpeg">
     <p>Doritos</p>
   </div>
 
-  <div class="item" data-name="Snickers">
+  <div class="item" data-code="A2" data-name="Snickers">
     <img src="snickers.jpeg">
     <p>Snickers</p>
   </div>
 
-  <div class="item" data-name="Sprite">
+  <div class="item" data-code="A3" data-name="Sprite">
     <img src="sprite.jpeg">
     <p>Sprite</p>
   </div>
 
-  <div class="item" data-name="Lays">
+  <div class="item" data-code="B1" data-name="Lays">
     <img src="lays.jpeg">
     <p>Lays</p>
   </div>
 
-  <div class="item" data-name="Candy">
+  <div class="item" data-code="B2" data-name="Candy">
     <img src="snickers.jpeg">
     <p>Candy</p>
   </div>
 
-  <div class="item" data-name="Chips">
+  <div class="item" data-code="B3" data-name="Chips">
     <img src="doritos.jpeg">
     <p>Chips</p>
   </div>
 
-  <div class="cursor" id="cursor"></div>
-
 </section>
 
-<div class="tray" id="tray">Insert coin to play</div>
+<div class="keypad">
+  <button onclick="pressKey('A')">A</button>
+  <button onclick="pressKey('B')">B</button>
+  <button onclick="pressKey('C')">C</button>
+  <button onclick="pressKey('1')">1</button>
+  <button onclick="pressKey('2')">2</button>
+  <button onclick="pressKey('3')">3</button>
+</div>
+
+<div class="tray" id="tray">Waiting...</div>
 
 </div>
 
 <script>
 const items = document.querySelectorAll(".item");
-const cursor = document.getElementById("cursor");
-const tray = document.getElementById("tray");
+const led = document.getElementById("led");
 const display = document.getElementById("display");
-const grid = document.getElementById("grid");
+const tray = document.getElementById("tray");
 
 let index = 0;
 let hasCoin = false;
+let inputCode = "";
+
 const cols = 3;
 
-/* 🪙 INSERT COIN */
+/* COIN */
 function insertCoin() {
   hasCoin = true;
-  display.innerHTML = "READY ▶ SELECT ITEM";
-  tray.innerHTML = "Use arrow keys + Enter";
+  display.innerText = "SELECT ITEM";
 }
 
-/* CURSOR */
-function updateCursor() {
+/* UPDATE SELECTION */
+function updateSelection() {
   items.forEach(i => i.classList.remove("active"));
-  items[index].classList.add("active");
 
-  const rect = items[index].getBoundingClientRect();
-  const parent = grid.getBoundingClientRect();
+  const item = items[index];
+  item.classList.add("active");
 
-  cursor.style.left = (rect.left - parent.left + rect.width/2 - 12) + "px";
-  cursor.style.top = (rect.top - parent.top + rect.height/2 - 12) + "px";
+  led.innerText = item.dataset.code;
 }
 
-updateCursor();
+updateSelection();
 
-/* JOYSTICK */
+/* 🎮 JOYSTICK FIXED */
 window.addEventListener("keydown", (e) => {
 
-  if (!hasCoin) return; // 🔒 LOCK UNTIL COIN
-
-  if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Enter"].includes(e.key)) {
-    e.preventDefault();
-  }
+  if (!hasCoin) return;
 
   if (e.key === "ArrowRight") index++;
   if (e.key === "ArrowLeft") index--;
@@ -242,31 +214,40 @@ window.addEventListener("keydown", (e) => {
   if (index < 0) index = 0;
   if (index >= items.length) index = items.length - 1;
 
-  updateCursor();
+  updateSelection();
 
   if (e.key === "Enter") {
-    dispenseItem();
+    dispense(items[index]);
   }
 });
 
+/* KEYPAD */
+function pressKey(key) {
+  if (!hasCoin) return;
+
+  inputCode += key;
+  led.innerText = inputCode;
+
+  if (inputCode.length === 2) {
+    const item = [...items].find(i => i.dataset.code === inputCode);
+
+    if (item) {
+      dispense(item);
+    } else {
+      display.innerText = "INVALID";
+    }
+
+    inputCode = "";
+  }
+}
+
 /* DISPENSE */
-function dispenseItem() {
-  const item = items[index];
-  const name = item.dataset.name;
-  const imgSrc = item.querySelector("img").src;
-
-  const falling = document.createElement("div");
-  falling.className = "falling";
-  falling.innerHTML = `<img src="${imgSrc}" style="width:80px"><br>${name}`;
-
-  grid.appendChild(falling);
-
-  display.innerHTML = "DISPENSING...";
+function dispense(item) {
+  display.innerText = "DISPENSING...";
 
   setTimeout(() => {
-    tray.innerHTML = "🎉 You got " + name;
-    display.innerHTML = "INSERT COIN AGAIN";
-    falling.remove();
+    tray.innerText = "🎉 " + item.dataset.name;
+    display.innerText = "INSERT COIN";
     hasCoin = false;
   }, 1000);
 }
