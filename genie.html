@@ -4,10 +4,14 @@
 <meta charset="UTF-8">
 <title>Genie Bazaar Premium UI</title>
 
+<!-- 👑 FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+
 <style>
 body {
   margin: 0;
-  font-family: serif;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 1px;
   overflow: hidden;
   color: white;
 
@@ -15,7 +19,7 @@ body {
   cursor: url('genie-cursor.png') 16 16, auto;
 }
 
-/* ⭐ FIX: overlay should NOT block clicks */
+/* ⭐ STARS */
 body::after {
   content: "";
   position: fixed;
@@ -23,7 +27,7 @@ body::after {
   background-image: radial-gradient(white 1px, transparent 1px);
   background-size: 40px 40px;
   opacity: 0.15;
-  pointer-events: none; /* 🔥 IMPORTANT FIX */
+  pointer-events: none;
 }
 
 /* 🧞 CARPET */
@@ -33,14 +37,14 @@ body::after {
   padding: 30px;
 
   background: radial-gradient(#8b1e3f, #3a0c1d);
-  border: 6px solid gold;
+  border: 6px double gold;
   border-radius: 60px 60px 40px 40px;
 
   box-shadow: 0 0 40px rgba(0,0,0,0.6),
               inset 0 0 30px rgba(0,0,0,0.5);
 
   position: relative;
-  z-index: 1; /* ensure above background */
+  z-index: 1;
 
   animation: floatCarpet 4s ease-in-out infinite;
 }
@@ -48,6 +52,16 @@ body::after {
 @keyframes floatCarpet {
   0%,100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
+}
+
+/* ✨ MAGIC BURST */
+.container.flash {
+  animation: flash 0.4s;
+}
+
+@keyframes flash {
+  0% { box-shadow: 0 0 10px white, 0 0 40px gold; }
+  100% { box-shadow: none; }
 }
 
 /* TITLE */
@@ -81,27 +95,45 @@ body::after {
 
   background: linear-gradient(#9d4edd, #5a189a);
   border: 2px solid gold;
-  border-radius: 20px;
+
+  /* 🕌 ARCH SHAPE */
+  border-radius: 50% 50% 20% 20%;
 
   display: flex;
   flex-direction: column;
   justify-content: center;
 
   transition: 0.3s;
+  position: relative;
 }
 
-/* hover now works */
+/* ✨ SHIMMER */
+.stall::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
+  transition: 0.5s;
+}
+
+.stall:hover::after {
+  left: 100%;
+}
+
 .stall:hover {
   transform: translateY(-10px) scale(1.1);
 }
 
-/* active */
+/* ACTIVE */
 .stall.active {
-  box-shadow: 0 0 20px gold;
+  box-shadow: 0 0 25px gold, 0 0 50px purple;
   transform: scale(1.1);
 }
 
-/* SCROLL */
+/* 📜 SCROLL */
 .scroll {
   position: absolute;
   top: -20px;
@@ -117,13 +149,16 @@ body::after {
   border-radius: 10px;
   transform-origin: top;
   transition: 0.5s;
+  text-align: center;
+
+  line-height: 1.6;
 }
 
 .scroll.show {
   transform: translateX(-50%) scaleY(1);
 }
 
-/* GENIE */
+/* 🧞 GENIE */
 .genie {
   position: absolute;
   top: -120px;
@@ -162,6 +197,11 @@ nav span {
   cursor: pointer;
 }
 
+nav span.active {
+  background: gold;
+  color: black;
+}
+
 /* SMOKE */
 .smoke {
   position: absolute;
@@ -186,7 +226,7 @@ nav span {
 
 <div class="container">
 
-<div class="titlebar">🧞 GENIE BAZAAR</div>
+<div class="titlebar">🧞 GENIE GLOBAL BAZAAR</div>
 
 <div class="search-cloud">
   <input placeholder="✨ What do you seek?">
@@ -204,10 +244,10 @@ nav span {
 <button class="wish-btn" id="wishBtn">✨ Grant Wish</button>
 
 <nav>
+  <span class="active">Asia</span>
   <span>Africa</span>
-  <span>Middle East</span>
-  <span>Asia</span>
   <span>Europe</span>
+  <span>Middle East</span>
 </nav>
 
 </div>
@@ -217,44 +257,86 @@ const stalls = document.querySelectorAll(".stall");
 const scroll = document.getElementById("scroll");
 const genie = document.getElementById("genie");
 const btn = document.getElementById("wishBtn");
+const navItems = document.querySelectorAll("nav span");
+const container = document.querySelector(".container");
 
 let selected = "";
+let currentRegion = "Asia";
 
-/* CLICK FIX */
+/* DATA */
+const data = {
+  Asia: {
+    SPICES: { items: "Saffron, Cardamom, Turmeric", bazaar: "Grand Bazaar Istanbul" },
+    JEWELS: { items: "Jade, Ruby, Pearl", bazaar: "Jaipur Gem Market" },
+    FABRICS: { items: "Silk, Banarasi", bazaar: "Varanasi Textile Bazaar" }
+  },
+  Africa: {
+    SPICES: { items: "Berbere, Cloves", bazaar: "Marrakech Souk" },
+    JEWELS: { items: "Gold, Amber", bazaar: "Cairo Bazaar" },
+    FABRICS: { items: "Kente, Mudcloth", bazaar: "Accra Market" }
+  },
+  Europe: {
+    SPICES: { items: "Rosemary, Thyme", bazaar: "Barcelona Market" },
+    JEWELS: { items: "Emerald, Sapphire", bazaar: "Antwerp District" },
+    FABRICS: { items: "Velvet, Linen", bazaar: "Florence Market" }
+  },
+  "Middle East": {
+    SPICES: { items: "Za’atar, Sumac", bazaar: "Dubai Spice Souk" },
+    JEWELS: { items: "Opal, Topaz", bazaar: "Gold Souk Dubai" },
+    FABRICS: { items: "Brocade, Silk", bazaar: "Tehran Bazaar" }
+  }
+};
+
+/* STALL SELECT */
 stalls.forEach(stall => {
   stall.addEventListener("click", () => {
-
     stalls.forEach(s => s.classList.remove("active"));
-
     stall.classList.add("active");
-
-    selected = stall.innerText;
+    selected = stall.innerText.split("\n")[1];
   });
 });
 
-/* BUTTON FIX */
+/* NAV */
+navItems.forEach(nav => {
+  nav.addEventListener("click", () => {
+    navItems.forEach(n => n.classList.remove("active"));
+    nav.classList.add("active");
+    currentRegion = nav.innerText;
+  });
+});
+
+/* GRANT WISH */
 btn.addEventListener("click", () => {
 
   scroll.classList.remove("show");
   genie.classList.remove("show");
 
+  container.classList.add("flash");
+
   setTimeout(() => {
+
+    container.classList.remove("flash");
 
     if (!selected) {
       scroll.innerHTML = "🧞 Choose an item first!";
     } else {
-      scroll.innerHTML = "🧞 " + selected + "<br>✨ Your wish is granted!";
+      const result = data[currentRegion][selected];
+
+      scroll.innerHTML = `
+        🧞 ${selected} from ${currentRegion}<br><br>
+        📍 ${result.bazaar}<br>
+        ✨ ${result.items}
+      `;
     }
 
     scroll.classList.add("show");
     genie.classList.add("show");
 
-  }, 200);
+  }, 300);
 });
 
 /* SMOKE */
 let last = 0;
-
 document.addEventListener("mousemove", e => {
   const now = Date.now();
   if (now - last > 50) {
