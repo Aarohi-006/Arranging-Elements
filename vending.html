@@ -13,6 +13,7 @@ body {
   height: 100vh;
   margin: 0;
   font-family: monospace;
+  outline: none;
 }
 
 /* MACHINE */
@@ -47,7 +48,6 @@ body {
 
 /* GRID */
 .grid {
-  position: relative;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
@@ -68,7 +68,7 @@ body {
   object-fit: contain;
 }
 
-/* ACTIVE ITEM */
+/* ACTIVE */
 .item.active {
   outline: 4px solid red;
   transform: scale(1.05);
@@ -114,7 +114,7 @@ body {
 
 </head>
 
-<body>
+<body tabindex="0">
 
 <div class="machine">
 
@@ -127,33 +127,27 @@ body {
 <section class="grid" id="grid">
 
   <div class="item" data-code="A1" data-name="Doritos">
-    <img src="doritos.jpeg">
-    <p>Doritos</p>
+    <img src="doritos.jpeg"><p>Doritos</p>
   </div>
 
   <div class="item" data-code="A2" data-name="Snickers">
-    <img src="snickers.jpeg">
-    <p>Snickers</p>
+    <img src="snickers.jpeg"><p>Snickers</p>
   </div>
 
   <div class="item" data-code="A3" data-name="Sprite">
-    <img src="sprite.jpeg">
-    <p>Sprite</p>
+    <img src="sprite.jpeg"><p>Sprite</p>
   </div>
 
   <div class="item" data-code="B1" data-name="Lays">
-    <img src="lays.jpeg">
-    <p>Lays</p>
+    <img src="lays.jpeg"><p>Lays</p>
   </div>
 
   <div class="item" data-code="B2" data-name="Candy">
-    <img src="snickers.jpeg">
-    <p>Candy</p>
+    <img src="snickers.jpeg"><p>Candy</p>
   </div>
 
   <div class="item" data-code="B3" data-name="Chips">
-    <img src="doritos.jpeg">
-    <p>Chips</p>
+    <img src="doritos.jpeg"><p>Chips</p>
   </div>
 
 </section>
@@ -180,8 +174,11 @@ const tray = document.getElementById("tray");
 let index = 0;
 let hasCoin = false;
 let inputCode = "";
-
 const cols = 3;
+
+/* FORCE FOCUS */
+window.onload = () => document.body.focus();
+document.body.addEventListener("click", () => document.body.focus());
 
 /* COIN */
 function insertCoin() {
@@ -189,30 +186,36 @@ function insertCoin() {
   display.innerText = "SELECT ITEM";
 }
 
-/* UPDATE SELECTION */
+/* UPDATE */
 function updateSelection() {
   items.forEach(i => i.classList.remove("active"));
-
   const item = items[index];
   item.classList.add("active");
-
   led.innerText = item.dataset.code;
 }
-
 updateSelection();
 
-/* 🎮 JOYSTICK FIXED */
-window.addEventListener("keydown", (e) => {
+/* JOYSTICK (FIXED) */
+document.addEventListener("keydown", (e) => {
 
   if (!hasCoin) return;
 
-  if (e.key === "ArrowRight") index++;
-  if (e.key === "ArrowLeft") index--;
-  if (e.key === "ArrowDown") index += cols;
-  if (e.key === "ArrowUp") index -= cols;
+  if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Enter"].includes(e.key)) {
+    e.preventDefault();
+  }
 
-  if (index < 0) index = 0;
-  if (index >= items.length) index = items.length - 1;
+  let row = Math.floor(index / cols);
+  let col = index % cols;
+
+  if (e.key === "ArrowRight") col++;
+  if (e.key === "ArrowLeft") col--;
+  if (e.key === "ArrowDown") row++;
+  if (e.key === "ArrowUp") row--;
+
+  col = Math.max(0, Math.min(2, col));
+  row = Math.max(0, Math.min(1, row));
+
+  index = row * cols + col;
 
   updateSelection();
 
