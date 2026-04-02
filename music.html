@@ -15,32 +15,19 @@ body {
   height: 100vh;
 }
 
-/* MAIN PLAYER */
 .player {
   width: 420px;
   background: #d9c2a3;
   border-radius: 20px;
   padding: 20px;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.5),
-              0 10px 30px rgba(0,0,0,0.4);
-}
-
-/* 🎞 CASSETTE */
-.cassette {
-  background: #f5e6cc;
-  padding: 10px;
-  border-radius: 10px;
 }
 
 .cassette input {
   width: 100%;
   padding: 8px;
-  border: none;
-  font-size: 16px;
   text-align: center;
 }
 
-/* 🎵 VINYL */
 .vinyl-container {
   position: relative;
   width: 260px;
@@ -55,30 +42,26 @@ body {
   background: radial-gradient(circle, #000 40%, #111 60%);
 }
 
-/* spin */
 .spin {
   animation: spin 3s linear infinite;
 }
-
 @keyframes spin {
-  from { transform: rotate(0deg); }
+  from { transform: rotate(0); }
   to { transform: rotate(360deg); }
 }
 
-/* album dots */
+/* DOTS */
 .dot {
   width: 12px;
   height: 12px;
   border-radius: 50%;
   position: absolute;
   cursor: pointer;
+  box-shadow: 0 0 8px white;
 }
+.dot:hover { transform: scale(1.6); }
 
-.dot:hover {
-  transform: scale(1.5);
-}
-
-/* needle */
+/* NEEDLE */
 .needle {
   width: 120px;
   height: 4px;
@@ -88,74 +71,48 @@ body {
   right: -20px;
   transform-origin: left;
   transform: rotate(-30deg);
-  transition: 0.5s;
+  transition: 0.4s;
 }
-
 .needle.drop {
   transform: rotate(10deg);
 }
 
-/* 🎛 CONTROLS */
+/* CONTROLS */
 .controls {
   text-align: center;
 }
 
-.controls button {
-  margin: 5px;
-  padding: 10px;
-  border-radius: 50%;
-  border: none;
-  background: #222;
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 4px #000;
-}
-
-.controls button:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px #000;
-}
-
+/* PROGRESS */
 progress {
   width: 80%;
+  height: 8px;
   margin-top: 10px;
 }
 
-/* 📋 LIST PANEL */
+/* LIST */
 .list-panel {
-  background: #111;
-  color: #0f0;
-  font-size: 14px;
-  padding: 10px;
+  background: black;
+  color: lime;
   height: 120px;
   overflow-y: auto;
   margin-top: 10px;
-  border-radius: 10px;
-  text-align: left;
+  padding: 10px;
 }
 
 .list-panel div:hover {
-  background: #0f0;
+  background: lime;
   color: black;
-  cursor: pointer;
 }
 
-/* 🎚 NAV */
+/* NAV */
 nav {
-  margin-top: 15px;
   display: flex;
   justify-content: space-around;
+  margin-top: 10px;
 }
-
-nav span {
-  cursor: pointer;
-  padding: 5px 10px;
-}
-
 nav span.active {
   background: black;
   color: yellow;
-  border-radius: 10px;
 }
 </style>
 </head>
@@ -164,51 +121,51 @@ nav span.active {
 
 <div class="player">
 
-  <!-- 🎞 CASSETTE -->
-  <div class="cassette">
-    <input id="search" placeholder="Search song or artist...">
+<div class="cassette">
+  <input id="search" placeholder="Search song...">
+</div>
+
+<div class="vinyl-container">
+  <div class="vinyl" id="vinyl">
+
+    <div class="dot" style="top:40%; left:70%; background:red"
+         onclick="playTrackCategory('HIPHOP')"></div>
+
+    <div class="dot" style="top:65%; left:30%; background:yellow"
+         onclick="playTrackCategory('DISCO')"></div>
+
+    <div class="dot" style="top:30%; left:40%; background:blue"
+         onclick="playTrackCategory('POP')"></div>
+
+    <div class="dot" style="top:20%; left:65%; background:purple"
+         onclick="playTrackCategory('ROCK')"></div>
+
+    <div class="dot" style="top:75%; left:50%; background:green"
+         onclick="playTrackCategory('INDIE')"></div>
+
   </div>
 
-  <!-- 🎵 VINYL -->
-  <div class="vinyl-container">
-    <div class="vinyl" id="vinyl">
+  <div class="needle" id="needle"></div>
+</div>
 
-      <div class="dot" style="top:40%; left:70%; background:red"
-           onclick="playTrack('HIP HOP')"></div>
+<div class="controls">
+  <div id="nowPlaying">Now Playing: —</div>
+  <button onclick="play()">▶</button>
+  <button onclick="pause()">⏸</button>
 
-      <div class="dot" style="top:60%; left:30%; background:yellow"
-           onclick="playTrack('DISCO')"></div>
+  <!-- ✅ PROGRESS -->
+  <progress id="progressBar" value="0" max="100"></progress>
+</div>
 
-      <div class="dot" style="top:30%; left:40%; background:blue"
-           onclick="playTrack('POP')"></div>
+<section class="list-panel" id="listPanel">
+  Select a genre 🎵
+</section>
 
-    </div>
-
-    <div class="needle" id="needle"></div>
-  </div>
-
-  <!-- 🎛 CONTROLS -->
-  <div class="controls">
-    <div id="nowPlaying">Now Playing: —</div>
-
-    <button onclick="play()">▶</button>
-    <button onclick="pause()">⏸</button>
-
-    <br>
-    <progress value="20" max="100"></progress>
-  </div>
-
-  <!-- 📋 LIST PANEL -->
-  <section class="list-panel" id="listPanel">
-    Select a category 🎵
-  </section>
-
-  <!-- 🎚 NAV -->
-  <nav>
-    <span class="active">SONGS</span>
-    <span>ARTISTS</span>
-    <span>ALBUMS</span>
-  </nav>
+<nav>
+  <span class="active">SONGS</span>
+  <span>ARTISTS</span>
+  <span>ALBUMS</span>
+</nav>
 
 </div>
 
@@ -217,136 +174,125 @@ const vinyl = document.getElementById("vinyl");
 const needle = document.getElementById("needle");
 const nowPlaying = document.getElementById("nowPlaying");
 const listPanel = document.getElementById("listPanel");
+const progressBar = document.getElementById("progressBar");
 
-/* 🎵 DATA STRUCTURE */
+let interval = null;
+
+/* DATA */
 const musicData = {
-  POP: {
-    album: "Future Nostalgia",
-    artist: "Dua Lipa",
-    songs: ["Levitating", "Don't Start Now", "Physical"]
-  },
-  ROCK: {
-    album: "Back in Black",
-    artist: "AC/DC",
-    songs: ["Hells Bells", "Shoot to Thrill", "Back in Black"]
-  },
-  DISCO: {
-    album: "Saturday Night Fever",
-    artist: "Bee Gees",
-    songs: ["Stayin Alive", "Night Fever", "More Than a Woman"]
-  },
-  INDIE: {
-    album: "AM",
-    artist: "Arctic Monkeys",
-    songs: ["Do I Wanna Know?", "R U Mine?", "Why'd You Only Call Me"]
-  },
-  HIPHOP: {
-    album: "DAMN.",
-    artist: "Kendrick Lamar",
-    songs: ["HUMBLE.", "DNA.", "LOYALTY."]
-  }
+  POP: { album:"Future Nostalgia", artist:"Dua Lipa",
+    songs:["Levitating","Don't Start Now","Physical"] },
+
+  ROCK: { album:"Back in Black", artist:"AC/DC",
+    songs:["Hells Bells","Shoot to Thrill","Back in Black"] },
+
+  DISCO: { album:"Saturday Night Fever", artist:"Bee Gees",
+    songs:["Stayin Alive","Night Fever","More Than a Woman"] },
+
+  INDIE: { album:"AM", artist:"Arctic Monkeys",
+    songs:["Do I Wanna Know?","R U Mine?","Why'd You Only Call Me"] },
+
+  HIPHOP: { album:"DAMN.", artist:"Kendrick Lamar",
+    songs:["HUMBLE.","DNA.","LOYALTY."] }
 };
 
-/* 🎧 PLAY TRACK */
-function playTrack(name) {
-  nowPlaying.innerText = "Now Playing: " + name;
-  vinyl.classList.add("spin");
-  needle.classList.add("drop");
+/* START PROGRESS */
+function startProgress() {
+  clearInterval(interval);
+  progressBar.value = 0;
+
+  interval = setInterval(() => {
+    if (progressBar.value < 100) {
+      progressBar.value += 1;
+    } else {
+      clearInterval(interval);
+    }
+  }, 100);
 }
 
-/* 🎛 PLAY / PAUSE */
-function play() {
-  vinyl.classList.add("spin");
-  needle.classList.add("drop");
-}
+/* PLAY CATEGORY */
+function playTrackCategory(category){
+  const data = musicData[category];
 
-function pause() {
-  vinyl.classList.remove("spin");
+  nowPlaying.innerText = "Now Playing: " + data.album + " — " + data.artist;
+
+  vinyl.classList.add("spin");
+
   needle.classList.remove("drop");
+  setTimeout(()=>needle.classList.add("drop"),100);
+
+  showAlbum(category);
+  startProgress();
 }
 
-/* 🎚 NAV */
-document.querySelectorAll("nav span").forEach(tab => {
-  tab.addEventListener("click", () => {
-
-    document.querySelectorAll("nav span").forEach(t => t.classList.remove("active"));
-    tab.classList.add("active");
-
-    const type = tab.innerText;
-
-    /* SONGS VIEW */
-    if (type === "SONGS") {
-      listPanel.innerHTML = Object.keys(musicData).map(key => {
-        return musicData[key].songs.map(song =>
-          `<div onclick="playTrack('${song}')">🎵 ${song}</div>`
-        ).join("");
-      }).join("");
-    }
-
-    /* ARTISTS VIEW */
-    if (type === "ARTISTS") {
-      listPanel.innerHTML = Object.keys(musicData).map(key =>
-        `<div onclick="playTrack('${musicData[key].artist}')">🎤 ${musicData[key].artist}</div>`
-      ).join("");
-    }
-
-    /* ALBUMS VIEW */
-    if (type === "ALBUMS") {
-      listPanel.innerHTML = Object.keys(musicData).map(key =>
-        `<div onclick="showAlbum('${key}')">💿 ${musicData[key].album}</div>`
-      ).join("");
-    }
-
-  });
-});
-
-/* 📀 SHOW ALBUM TRACKLIST */
-function showAlbum(category) {
+/* SHOW ALBUM */
+function showAlbum(category){
   const data = musicData[category];
 
   listPanel.innerHTML = `
-    <strong>💿 ${data.album}</strong><br>
-    <em>by ${data.artist}</em><br><br>
-    ${data.songs.map(song =>
-      `<div onclick="playTrack('${song}')">🎵 ${song}</div>`
-    ).join("")}
+    <strong>${data.album}</strong><br>
+    <em>${data.artist}</em><br><br>
+    ${data.songs.map(s=>`<div onclick="playTrack('${s}')">${s}</div>`).join("")}
   `;
 }
 
-/* 🎵 VINYL DOTS */
-function playTrackCategory(category) {
-  const data = musicData[category];
-
-  nowPlaying.innerText = "Now Playing: " + data.album;
-  vinyl.classList.add("spin");
-  needle.classList.add("drop");
-
-  showAlbum(category);
+/* PLAY SONG */
+function playTrack(song){
+  nowPlaying.innerText = "Now Playing: " + song;
+  startProgress();
 }
 
-/* 🔁 CONNECT DOTS (IMPORTANT) */
-document.querySelectorAll(".dot")[0].onclick = () => playTrackCategory("HIPHOP");
-document.querySelectorAll(".dot")[1].onclick = () => playTrackCategory("DISCO");
-document.querySelectorAll(".dot")[2].onclick = () => playTrackCategory("POP");
+/* PLAY / PAUSE */
+function play(){
+  vinyl.classList.add("spin");
+  needle.classList.add("drop");
+  startProgress();
+}
 
-/* 🔍 SEARCH */
-document.getElementById("search").addEventListener("keydown", (e)=>{
-  if(e.key === "Enter"){
-    const val = e.target.value.toLowerCase();
+function pause(){
+  vinyl.classList.remove("spin");
+  needle.classList.remove("drop");
+  clearInterval(interval);
+}
 
-    let results = [];
+/* NAV */
+document.querySelectorAll("nav span").forEach(tab=>{
+  tab.onclick=()=>{
+    document.querySelectorAll("nav span").forEach(t=>t.classList.remove("active"));
+    tab.classList.add("active");
 
-    Object.values(musicData).forEach(cat=>{
-      cat.songs.forEach(song=>{
-        if(song.toLowerCase().includes(val)){
-          results.push(song);
-        }
+    if(tab.innerText==="ARTISTS"){
+      listPanel.innerHTML = Object.values(musicData)
+        .map(d=>`<div>${d.artist}</div>`).join("");
+    }
+
+    if(tab.innerText==="ALBUMS"){
+      listPanel.innerHTML = Object.values(musicData)
+        .map((d,i)=>`<div onclick="showAlbum('${Object.keys(musicData)[i]}')">${d.album}</div>`).join("");
+    }
+
+    if(tab.innerText==="SONGS"){
+      listPanel.innerHTML = Object.values(musicData)
+        .map(d=>d.songs.map(s=>`<div>${s}</div>`).join("")).join("");
+    }
+  };
+});
+
+/* SEARCH */
+document.getElementById("search").addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+    const val=e.target.value.toLowerCase();
+
+    let res=[];
+    Object.values(musicData).forEach(d=>{
+      d.songs.forEach(s=>{
+        if(s.toLowerCase().includes(val)) res.push(s);
       });
     });
 
-    listPanel.innerHTML = results.length
-      ? results.map(r => `<div onclick="playTrack('${r}')">${r}</div>`).join("")
-      : "No results found 🎧";
+    listPanel.innerHTML = res.length
+      ? res.map(r=>`<div>${r}</div>`).join("")
+      : "No results";
   }
 });
 </script>
