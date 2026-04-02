@@ -19,18 +19,21 @@ body {
   cursor: none;
 }
 
-/* 🟦 DORAEMON CURSOR */
+/* ✅ FIXED CURSOR */
 .cursor {
   position: fixed;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: radial-gradient(circle, #fff 40%, #aee6ff 100%);
   border: 2px solid #1F3A5F;
   box-shadow: 0 0 12px #aee6ff;
   pointer-events: none;
+  z-index: 99999;
+  left: 0;
+  top: 0;
   transform: translate(-50%, -50%);
-  z-index: 9999;
+  transition: transform 0.08s ease; /* smooth follow */
 }
 
 .cursor::after {
@@ -59,15 +62,10 @@ body {
 }
 
 /* HEADER */
-.header img {
-  width: 130px;
-}
+.header img { width: 130px; }
 
 /* DOOR */
-.door-wrapper {
-  perspective: 1200px;
-}
-
+.door-wrapper { perspective: 1200px; }
 .door-frame {
   width: 340px;
   height: 230px;
@@ -114,9 +112,7 @@ body {
   transition: transform 0.8s ease;
   z-index: 2;
 }
-.door.open {
-  transform: rotateY(-120deg);
-}
+.door.open { transform: rotateY(-120deg); }
 
 /* KNOB */
 .doraemon-knob {
@@ -130,7 +126,6 @@ body {
   top: 55%;
   transform: translateY(-50%);
   z-index: 3;
-  cursor: pointer;
 }
 
 /* COPTER */
@@ -155,18 +150,14 @@ body {
   justify-content: center;
   gap: 60px;
 }
-.icon img {
-  width: 60px;
-}
+.icon img { width: 60px; }
 
 /* POCKET */
 .pocket-container {
   margin-top: 20px;
   position: relative;
 }
-#pocket {
-  width: 90px;
-}
+#pocket { width: 90px; }
 
 .pocket-count {
   position: absolute;
@@ -178,15 +169,15 @@ body {
   padding: 3px 6px;
 }
 
-/* FLY ANIMATION */
+/* FLY */
 .fly-img {
   position: fixed;
   width: 60px;
   height: 60px;
   border-radius: 10px;
   object-fit: cover;
-  transition: 0.8s;
   z-index: 999;
+  transition: all 0.8s ease;
 }
 </style>
 </head>
@@ -203,13 +194,9 @@ body {
 
 <div class="door-wrapper">
   <div class="door-frame">
-
     <div class="inside" id="inside"></div>
-
     <div class="door" id="door"></div>
-
-    <div class="doraemon-knob" id="knob"></div>
-
+    <div class="doraemon-knob"></div>
   </div>
 </div>
 
@@ -228,20 +215,20 @@ body {
 
 </div>
 
-<div class="cursor"></div>
+<div class="cursor" id="cursor"></div>
 
 <script>
-const cursor = document.querySelector(".cursor");
+const cursor = document.getElementById("cursor");
 
-/* CURSOR MOVE */
-document.addEventListener("mousemove", e=>{
-  cursor.style.left = e.clientX+"px";
-  cursor.style.top = e.clientY+"px";
+/* ✅ FIXED CURSOR TRACKING */
+window.addEventListener("mousemove", (e) => {
+  cursor.style.left = e.clientX + "px";
+  cursor.style.top = e.clientY + "px";
 });
 
 /* CLICK EFFECT */
-document.addEventListener("mousedown", ()=>cursor.classList.add("click"));
-document.addEventListener("mouseup", ()=>cursor.classList.remove("click"));
+window.addEventListener("mousedown", () => cursor.classList.add("click"));
+window.addEventListener("mouseup", () => cursor.classList.remove("click"));
 
 const door = document.getElementById("door");
 const inside = document.getElementById("inside");
@@ -249,38 +236,27 @@ const copter = document.getElementById("copter");
 
 let pocketItems = [];
 
-/* DATA */
 const data = {
   Beach: [
-    {name:"🏝 Bali", img:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400"},
-    {name:"🏖 Maldives", img:"https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=400"}
-    {name: "🏖 Santorini", img: "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=400&auto=format&fit=crop"},
-  ],
-  
+    {name:"Bali", img:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400"},
+    {name:"Maldives", img:"https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=400"},
+    {name:"Santorini", img: "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=400&auto=format&fit=crop"
+    }
+ ],
   City: [
-    {name:"🏙 NYC", img:"nyc.jpeg"},
-    {name:"🏙 Tokyo", img:"https://images.unsplash.com/photo-1549692520-acc6669e2f0c?w=400"}
-      {name:"🏙 Paris", img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&auto=format&fit=crop" },
+    {name:"NYC", img:"nyc.jpeg"},
+    {name:"Tokyo", img:"https://images.unsplash.com/photo-1549692520-acc6669e2f0c?w=400"},
+    {name:"Paris", img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&auto=format&fit=crop"
+    },
   ],
- 
   Mountains: [
-    {
-      name: "⛰ Himalayas",
-      img: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=400&auto=format&fit=crop"
-    },
-    {
-      name: "🏔 Swiss Alps",
-      img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400&auto=format&fit=crop"
-    },
-    {
-      name: "⛰ Rocky Mountains",
-      img: "https://images.unsplash.com/photo-1500534623283-312aade485b7?w=400&auto=format&fit=crop"
-    },
+    {name:"Swiss Alps", img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400&auto=format&fit=crop"},
+    {name: "Rocky Mountains", img: "https://images.unsplash.com/photo-1500534623283-312aade485b7?w=400&auto=format&fit=crop"},
+    {name:"Himalayas", img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=400"}
   ]
 };
 
-
-/* CATEGORY CLICK */
+/* CATEGORY */
 document.querySelectorAll(".icon").forEach(icon=>{
   icon.onclick=()=>{
     const cat = icon.innerText.trim();
@@ -293,25 +269,14 @@ document.querySelectorAll(".icon").forEach(icon=>{
       </div>
     `).join("");
 
-    door.classList.remove("open");
-    inside.classList.remove("show");
-    copter.classList.remove("fly");
-
     setTimeout(()=>copter.classList.add("fly"),100);
     setTimeout(()=>door.classList.add("open"),600);
     setTimeout(()=>inside.classList.add("show"),900);
   }
 });
 
-/* KNOB CLICK */
-document.getElementById("knob").onclick = () => {
-  door.classList.add("open");
-  setTimeout(()=>inside.classList.add("show"),600);
-};
-
-/* ADD TO POCKET */
+/* POCKET */
 function addToPocket(name,img){
-
   if(!pocketItems.includes(name)) pocketItems.push(name);
   document.getElementById("pocketCount").innerText = pocketItems.length;
 
