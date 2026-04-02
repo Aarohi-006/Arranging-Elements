@@ -31,9 +31,6 @@ body {
   transform: translate(-50%, -50%);
   z-index: 9999;
 }
-.cursor.hover {
-  transform: translate(-50%, -50%) scale(1.5);
-}
 
 /* CONTAINER */
 .ui-container {
@@ -46,44 +43,67 @@ body {
 
 /* HEADER */
 .header img {
-  width: 120px;
-}
-
-h2 {
-  color: #1F3A5F;
+  width: 130px;
 }
 
 /* DOOR */
+.door-wrapper {
+  perspective: 1200px;
+  position: relative;
+}
+
 .door-frame {
   width: 340px;
   height: 230px;
   position: relative;
 }
 
+/* INSIDE */
 .inside {
   position: absolute;
   width: 100%;
   height: 100%;
   background: radial-gradient(circle, #fff, #87CEFA);
   border-radius: 20px;
-  opacity: 0;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  opacity: 0;
   transition: 0.5s;
 }
 .inside.show { opacity: 1; }
 
+/* CARDS */
+.results {
+  display: flex;
+  gap: 10px;
+}
+.card {
+  background: white;
+  border-radius: 10px;
+  padding: 8px;
+  width: 90px;
+}
+.card img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+/* PINK DOOR (RESTORED) */
 .door {
   position: absolute;
   width: 100%;
   height: 100%;
   background: #FF7BA9;
   border-radius: 20px;
+  border: 5px solid #1F3A5F;
   transform-origin: left;
-  transition: 0.8s;
+  transition: transform 0.8s ease;
+  z-index: 2;
 }
-.door.open { transform: rotateY(-120deg); }
+.door.open {
+  transform: rotateY(-120deg);
+}
 
 /* COPTER */
 .copter {
@@ -91,11 +111,11 @@ h2 {
   width: 60px;
   bottom: 20%;
   left: 10%;
-  transition: 1s;
+  transition: all 1s ease;
 }
 .copter.fly {
+  bottom: 50%;
   left: 45%;
-  top: 40%;
   transform: scale(0.3);
   opacity: 0;
 }
@@ -105,16 +125,23 @@ h2 {
   margin-top: 30px;
   display: flex;
   justify-content: center;
-  gap: 50px;
+  gap: 60px;
 }
-.icon img { width: 60px; }
+.icon img {
+  width: 60px;
+  display: block;
+  margin: auto;
+}
 
 /* POCKET */
 .pocket-container {
   margin-top: 20px;
   position: relative;
+  text-align: center;
 }
-#pocket { width: 90px; }
+#pocket {
+  width: 90px;
+}
 .pocket-count {
   position: absolute;
   top: 0;
@@ -148,17 +175,22 @@ h2 {
 
 <h2>Anywhere Door</h2>
 
-<div class="door-frame">
-  <div class="inside" id="inside"></div>
-  <div class="door" id="door"></div>
+<div class="door-wrapper">
+  <div class="door-frame">
+
+    <div class="inside" id="inside"></div>
+
+    <div class="door" id="door"></div>
+
+  </div>
 </div>
 
 <img src="copter.png" class="copter" id="copter">
 
 <div class="nav">
-  <div class="icon">Beach</div>
-  <div class="icon">City</div>
-  <div class="icon">Mountains</div>
+  <div class="icon"><img src="locket.png"><br>Beach</div>
+  <div class="icon"><img src="locket.png"><br>City</div>
+  <div class="icon"><img src="locket.png"><br>Mountains</div>
 </div>
 
 <!-- POCKET -->
@@ -185,20 +217,86 @@ const copter = document.getElementById("copter");
 let pocketItems = [];
 
 const data = {
-  Beach:[{name:"Bali",img:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400"}],
-  City:[{name:"NYC",img:"https://images.unsplash.com/photo-1493244040629-496f6d136cc3?w=400"}],
-  Mountains:[{name:"Alps",img:"https://images.unsplash.com/photo-1464822759844-d150baec0494?w=400"}]
+  Beach: [
+    {
+      name: "🏝 Bali",
+      img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&auto=format&fit=crop"
+    },
+    {
+      name: "🏖 Maldives",
+      img: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=400&auto=format&fit=crop"
+    },
+    {
+      name: "🌊 Goa",
+      img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400&auto=format&fit=crop"
+    },
+    {
+      name: "🏝 Phuket",
+      img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&auto=format&fit=crop"
+    },
+    {
+      name: "🏖 Santorini",
+      img: "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=400&auto=format&fit=crop"
+    }
+  ],
+
+  City: [
+    {
+      name: "🏙 NYC",
+      img: "https://images.unsplash.com/photo-1493244040629-496f6d136cc3?w=400&auto=format&fit=crop"
+    },
+    {
+      name: "🏙 Tokyo",
+      img: "https://images.unsplash.com/photo-1549692520-acc6669e2f0c?w=400&auto=format&fit=crop"
+    },
+    {
+      name: "🏙 Paris",
+      img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&auto=format&fit=crop"
+    },
+    {
+      name: "🏙 Dubai",
+      img: "https://images.unsplash.com/photo-1498496294664-56c2d28d8b7b?w=400&auto=format&fit=crop"
+    },
+    {
+      name: "🏙 London",
+      img: "https://images.unsplash.com/photo-1473959383413-cdce1b37f25e?w=400&auto=format&fit=crop"
+    }
+  ],
+
+  Mountains: [
+    {
+      name: "🏔 Alps",
+      img: "https://images.unsplash.com/photo-1464822759844-d150baec0494?w=400&auto=format&fit=crop"
+    },
+    {
+      name: "⛰ Himalayas",
+      img: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=400&auto=format&fit=crop"
+    },
+    {
+      name: "🏔 Swiss Alps",
+      img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400&auto=format&fit=crop"
+    },
+    {
+      name: "⛰ Rocky Mountains",
+      img: "https://images.unsplash.com/photo-1500534623283-312aade485b7?w=400&auto=format&fit=crop"
+    },
+    {
+      name: "🏔 Patagonia",
+      img: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&auto=format&fit=crop"
+    }
+  ]
 };
 
+/* CATEGORY CLICK */
 document.querySelectorAll(".icon").forEach(icon=>{
   icon.onclick=()=>{
-    const cat=icon.innerText;
+    const cat=icon.innerText.trim();
 
     inside.innerHTML=data[cat].map(p=>`
-      <div>
-        <img src="${p.img}" width="100"><br>
-        ${p.name}<br>
-        <button onclick="addToPocket('${p.name}','${p.img}')">Add</button>
+      <div class="card">
+        <img src="${p.img}">
+        <p>${p.name}</p>
+        <button onclick="addToPocket('${p.name}','${p.img}')">Add to Pocket</button>
       </div>
     `).join("");
 
@@ -207,11 +305,12 @@ document.querySelectorAll(".icon").forEach(icon=>{
     copter.classList.remove("fly");
 
     setTimeout(()=>copter.classList.add("fly"),100);
-    setTimeout(()=>door.classList.add("open"),500);
-    setTimeout(()=>inside.classList.add("show"),800);
+    setTimeout(()=>door.classList.add("open"),600);
+    setTimeout(()=>inside.classList.add("show"),900);
   }
 });
 
+/* ADD TO POCKET */
 function addToPocket(name,img){
 
   if(!pocketItems.includes(name)) pocketItems.push(name);
