@@ -56,57 +56,54 @@ body {
   margin: 5px 0;
 }
 
-/* 🎞 GRID */
-.film-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
-  width: 85%;
-  margin: 30px auto;
+/* 🎞 ROWS */
+.film-row {
+  width: 90%;
+  margin: 20px 0;
 }
 
-.column {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.column h2 {
+.row-title {
   font-family: 'Bebas Neue';
-  letter-spacing: 2px;
+  font-size: 24px;
+  margin-bottom: 10px;
   border-bottom: 2px solid gold;
 }
 
-/* ERA ROW */
-.era-row {
-  background: rgba(255,255,255,0.05);
-  padding: 10px;
-  border-radius: 10px;
-}
-
-.era-title {
-  font-family: 'Bebas Neue';
-  margin-bottom: 5px;
-}
-
-/* MOVIES */
-.movie-row {
+/* SCROLL STRIP */
+.strip {
   display: flex;
-  gap: 10px;
+  gap: 20px;
+  width: max-content;
+  animation: scroll 25s linear infinite;
 }
 
+.strip:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* MOVIE CARD */
 .frame {
   background: #c9a66b;
-  padding: 6px;
+  padding: 8px;
   border-radius: 10px;
   cursor: pointer;
-  transition: 0.2s;
+  text-align: center;
 }
 
 .frame img {
-  width: 80px;
-  height: 110px;
+  width: 120px;
+  height: 170px;
   object-fit: cover;
+}
+
+.frame small {
+  display: block;
+  font-size: 10px;
 }
 
 .frame:hover {
@@ -137,7 +134,7 @@ body {
   transform: rotate(-3deg) scale(0.95);
 }
 
-/* GENRES */
+/* GENRE */
 .genres button {
   margin: 10px;
   padding: 10px 15px;
@@ -145,11 +142,6 @@ body {
   border: none;
   background: #ffcc00;
   cursor: pointer;
-}
-
-/* NAV */
-nav {
-  margin: 30px;
 }
 </style>
 </head>
@@ -181,8 +173,17 @@ nav {
   </div>
 </div>
 
-<!-- 🎞 GRID -->
-<div class="film-grid" id="filmGrid"></div>
+<!-- 🎞 BOLLYWOOD -->
+<div class="film-row">
+  <div class="row-title">Bollywood</div>
+  <div class="strip" id="bolly"></div>
+</div>
+
+<!-- 🎞 HOLLYWOOD -->
+<div class="film-row">
+  <div class="row-title">Hollywood</div>
+  <div class="strip" id="holly"></div>
+</div>
 
 <!-- 🎟 TICKET -->
 <aside class="ticket" id="ticketBox">
@@ -191,131 +192,68 @@ nav {
   </div>
 </aside>
 
-<!-- 🍿 GENRE -->
+<!-- GENRE -->
 <div class="genres">
   <button>🍿 Action</button>
   <button>🍿 Romance</button>
   <button>🍿 Drama</button>
 </div>
 
-<nav>
-  💡 Films | 🎞 Actors | 🎵 Music | 🎥 Directors
-</nav>
-
 <script>
 
-/* DATA */
 const movies = [
   {name:"Mother India", genre:"Drama", era:"1950s", industry:"Bollywood", img:"https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300"},
-  {name:"12 Angry Men", genre:"Drama", era:"1950s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?w=300"},
-
   {name:"Mughal-e-Azam", genre:"Romance", era:"1960s", industry:"Bollywood", img:"https://images.unsplash.com/photo-1505685296765-3a2736de412f?w=300"},
-  {name:"Psycho", genre:"Drama", era:"1960s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1517602302552-471fe67acf66?w=300"},
-
   {name:"Sholay", genre:"Action", era:"1970s", industry:"Bollywood", img:"https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=300"},
-  {name:"Godfather", genre:"Drama", era:"1970s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1485846234645-a62644f84728?w=300"},
-
   {name:"Mr India", genre:"Action", era:"1980s", industry:"Bollywood", img:"https://images.unsplash.com/photo-1497032205916-ac775f0649ae?w=300"},
-  {name:"Back to Future", genre:"Action", era:"1980s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=300"},
-
   {name:"DDLJ", genre:"Romance", era:"1990s", industry:"Bollywood", img:"https://images.unsplash.com/photo-1518929458119-e5bf444c30f4?w=300"},
-  {name:"Titanic", genre:"Romance", era:"1990s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300"},
-
   {name:"Lagaan", genre:"Drama", era:"2000s", industry:"Bollywood", img:"https://images.unsplash.com/photo-1492724441997-5dc865305da7?w=300"},
+
+  {name:"12 Angry Men", genre:"Drama", era:"1950s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?w=300"},
+  {name:"Psycho", genre:"Drama", era:"1960s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1517602302552-471fe67acf66?w=300"},
+  {name:"Godfather", genre:"Drama", era:"1970s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1485846234645-a62644f84728?w=300"},
+  {name:"Back to Future", genre:"Action", era:"1980s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=300"},
+  {name:"Titanic", genre:"Romance", era:"1990s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300"},
   {name:"Dark Knight", genre:"Action", era:"2000s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=300"}
 ];
 
+const bolly = document.getElementById("bolly");
+const holly = document.getElementById("holly");
 const ticket = document.getElementById("ticket");
 const ticketBox = document.getElementById("ticketBox");
-const flap = document.getElementById("flap");
-const search = document.getElementById("search");
-const yearFilter = document.getElementById("yearFilter");
 
-/* GRID RENDER */
-function renderMovies(list) {
-  const grid = document.getElementById("filmGrid");
-  grid.innerHTML = "";
+/* RENDER */
+function render(list){
+  bolly.innerHTML = "";
+  holly.innerHTML = "";
 
-  const eras = ["1950s","1960s","1970s","1980s","1990s","2000s"];
-  const industries = ["Bollywood","Hollywood"];
+  list.forEach(m=>{
+    const div=document.createElement("div");
+    div.className="frame";
+    div.innerHTML=`<img src="${m.img}"><small>${m.era}</small>`;
+    div.onclick=()=>selectMovie(m.name);
 
-  industries.forEach(industry => {
-
-    const col = document.createElement("div");
-    col.className = "column";
-
-    const title = document.createElement("h2");
-    title.innerText = industry;
-    col.appendChild(title);
-
-    eras.forEach(era => {
-
-      const row = document.createElement("div");
-      row.className = "era-row";
-
-      const eraTitle = document.createElement("div");
-      eraTitle.className = "era-title";
-      eraTitle.innerText = era;
-
-      const movieRow = document.createElement("div");
-      movieRow.className = "movie-row";
-
-      const filtered = list.filter(m => m.era === era && m.industry === industry);
-
-      filtered.forEach(m => {
-        const div = document.createElement("div");
-        div.className = "frame";
-        div.innerHTML = `<img src="${m.img}">`;
-        div.onclick = () => selectMovie(m.name);
-        movieRow.appendChild(div);
-      });
-
-      row.appendChild(eraTitle);
-      row.appendChild(movieRow);
-      col.appendChild(row);
-
-    });
-
-    grid.appendChild(col);
+    if(m.industry==="Bollywood") bolly.appendChild(div);
+    else holly.appendChild(div);
   });
+
+  /* duplicate for smooth scroll */
+  bolly.innerHTML += bolly.innerHTML;
+  holly.innerHTML += holly.innerHTML;
 }
 
-renderMovies(movies);
-
-/* SEARCH */
-search.addEventListener("keydown", e => {
-  if(e.key === "Enter"){
-    flap.classList.add("clap");
-    setTimeout(()=>flap.classList.remove("clap"),300);
-
-    const val = search.value.toLowerCase();
-    renderMovies(movies.filter(m => m.name.toLowerCase().includes(val)));
-  }
-});
-
-/* ERA FILTER */
-yearFilter.addEventListener("change", ()=>{
-  const val = yearFilter.value;
-  renderMovies(val ? movies.filter(m => m.era === val) : movies);
-});
-
-/* GENRE */
-document.querySelectorAll(".genres button").forEach(btn=>{
-  btn.onclick = ()=>{
-    const g = btn.innerText.replace("🍿","").trim();
-    renderMovies(movies.filter(m => m.genre === g));
-  };
-});
+render(movies);
 
 /* TICKET */
 function selectMovie(name){
   ticketBox.classList.add("torn");
 
   setTimeout(()=>{
-    ticket.innerHTML = `🎟 ${name}<br>Now Showing ✨`;
+    ticket.innerHTML=`🎟 ${name}<br>Now Showing ✨`;
     ticketBox.classList.remove("torn");
   },300);
 }
+
 </script>
 
 </body>
