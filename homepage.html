@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>UI Directions Portal</title>
+<title>UI Worlds</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;500&display=swap" rel="stylesheet">
 
@@ -19,24 +19,21 @@ body {
   font-family: 'Inter', sans-serif;
   color: white;
 
-  /* 🌌 ABSTRACT BACKGROUND */
-  background: radial-gradient(circle at 20% 20%, #3a0ca3, transparent),
-              radial-gradient(circle at 80% 80%, #ff006e, transparent),
-              #0f0f1a;
+  background: #0f0f1a;
 }
 
 /* TITLE */
 h1 {
   font-family: 'Bebas Neue';
+  font-size: 50px;
   letter-spacing: 4px;
-  font-size: 48px;
-  margin-bottom: 40px;
+  margin-bottom: 50px;
 }
 
 /* GRID */
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 180px);
+  grid-template-columns: repeat(3, 200px);
   gap: 25px;
 }
 
@@ -51,20 +48,43 @@ h1 {
   justify-content: center;
 
   font-size: 18px;
-  text-align: center;
-
   cursor: pointer;
-  transition: 0.3s;
 
-  backdrop-filter: blur(10px);
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: #1c1c2e;
+  border: 2px solid transparent;
+
+  transition: 0.3s;
 }
 
-/* HOVER */
+/* HOVER GLOW */
 .card:hover {
-  transform: translateY(-10px) scale(1.05);
-  box-shadow: 0 0 20px rgba(255,255,255,0.3);
+  transform: translateY(-8px);
+}
+
+/* INDIVIDUAL COLORS */
+.cinema:hover {
+  border-color: #ff4d4d;
+  box-shadow: 0 0 15px #ff4d4d;
+}
+
+.vending:hover {
+  border-color: #00ffd5;
+  box-shadow: 0 0 15px #00ffd5;
+}
+
+.doraemon:hover {
+  border-color: #4da6ff;
+  box-shadow: 0 0 15px #4da6ff;
+}
+
+.music:hover {
+  border-color: #ffd54d;
+  box-shadow: 0 0 15px #ffd54d;
+}
+
+.genie:hover {
+  border-color: #c77dff;
+  box-shadow: 0 0 15px #c77dff;
 }
 
 /* EMOJI */
@@ -72,37 +92,28 @@ h1 {
   font-size: 28px;
   margin-bottom: 8px;
 }
-
-/* INDIVIDUAL COLORS */
-.doraemon:hover { background: rgba(0,150,255,0.3); }
-.cinema:hover { background: rgba(255,100,0,0.3); }
-.music:hover { background: rgba(255,0,200,0.3); }
-.genie:hover { background: rgba(150,0,255,0.3); }
-.vending:hover { background: rgba(0,255,150,0.3); }
-
-/* FOOTER NOTE */
-.note {
-  margin-top: 30px;
-  font-size: 12px;
-  opacity: 0.6;
-}
 </style>
 </head>
 
 <body>
 
-<h1>✨ UI DIRECTIONS ✨</h1>
+<h1>✨ UI WORLDS ✨</h1>
 
 <div class="grid">
+
+  <div class="card cinema" onclick="go('cinema.html')">
+    <span>🎬</span>
+    Cinema
+  </div>
+
+  <div class="card vending" onclick="go('vending.html')">
+    <span>🕹</span>
+    Vending Arcade
+  </div>
 
   <div class="card doraemon" onclick="go('doraemon.html')">
     <span>🚪</span>
     Doraemon Door
-  </div>
-
-  <div class="card cinema" onclick="go('cinema.html')">
-    <span>🎬</span>
-    Cinema Khoj
   </div>
 
   <div class="card music" onclick="go('music.html')">
@@ -115,14 +126,7 @@ h1 {
     Genie Bazaar
   </div>
 
-  <div class="card vending" onclick="go('vending.html')">
-    <span>🕹</span>
-    Arcade Vending
-  </div>
-
 </div>
-
-<div class="note">Select a direction to explore</div>
 
 <script>
 function go(page) {
