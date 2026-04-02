@@ -93,7 +93,7 @@ body {
   border: none;
 }
 
-/* ð¥ TRAY (REAL POSITION) */
+/* 🟥 TRAY (REAL POSITION) */
 .tray-slot {
   margin-top: 20px;
   height: 60px;
@@ -167,9 +167,9 @@ body {
 <div class="item" data-code="B3" data-name="Red Bull"><img src="red bull.jpeg"><p>Red Bull</p></div>
 
 <!-- C -->
-<div class="item" data-code="C1" data-name="Mystery"><img src="https://cdn-icons-png.flaticon.com/512/3081/3081559.png"><p>ð</p></div>
-<div class="item" data-code="C2" data-name="XP Candy"><img src="xpcandy.jpeg"><p></p>ð¬</div>
-<div class="item" data-code="C3" data-name="Jackpot"><img src="https://cdn-icons-png.flaticon.com/512/3468/3468377.png"><p>ð</p></div>
+<div class="item" data-code="C1" data-name="Mystery"><img src="https://cdn-icons-png.flaticon.com/512/3081/3081559.png"><p>🎁</p></div>
+<div class="item" data-code="C2" data-name="XP Candy"><img src="xpcandy.jpeg"><p>🍬</p></div>
+<div class="item" data-code="C3" data-name="Jackpot"><img src="https://cdn-icons-png.flaticon.com/512/3468/3468377.png"><p>🏆</p></div>
 
 </section>
 
@@ -182,13 +182,13 @@ body {
   <button onclick="pressKey('3')">3</button>
 </div>
 
-<!-- ð¥ REAL TRAY -->
+<!-- 🟥 REAL TRAY -->
 <div class="tray-slot" id="traySlot"></div>
 
 <!-- SIDE PANEL -->
 <div class="side-panel">
   <div class="panel-led" id="panelLED">A1</div>
-  <button class="coin-btn" onclick="insertCoin()">ðª</button>
+  <button class="coin-btn" onclick="insertCoin()">🪙</button>
 </div>
 
 </div>
@@ -264,8 +264,8 @@ function pressKey(key) {
 function dispense(item) {
 
   if (item.dataset.code.startsWith("C")) {
-    display.innerText = "ð° BONUS!";
-    const rewards = ["FREE SNACK ð","TRY AGAIN","JACKPOT ð"];
+    display.innerText = "🎰 BONUS!";
+    const rewards = ["FREE SNACK 🎉","TRY AGAIN","JACKPOT 🏆"];
     setTimeout(()=>{
       display.innerText = rewards[Math.floor(Math.random()*rewards.length)];
       credits--;
