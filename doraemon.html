@@ -2,9 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Doraemon Anywhere Door UI</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600&display=swap" rel="stylesheet">
+<title>Doraemon Anywhere Door</title>
 
 <style>
 body {
@@ -13,94 +11,70 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Baloo 2', sans-serif;
-  background: url("doraemon-bg.jpg") repeat;
-  background-size: 300px;
-  cursor: none;
-}
-
-/* ✅ FIXED CURSOR */
-.cursor {
-  position: fixed;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #fff 40%, #aee6ff 100%);
-  border: 2px solid #1F3A5F;
-  box-shadow: 0 0 12px #aee6ff;
-  pointer-events: none;
-  z-index: 99999;
-  left: 0;
-  top: 0;
-  transform: translate(-50%, -50%);
-  transition: transform 0.08s ease; /* smooth follow */
-}
-
-.cursor::after {
-  content: "";
-  position: absolute;
-  width: 6px;
-  height: 12px;
-  background: #1F3A5F;
-  border-radius: 3px;
-  top: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.cursor.click {
-  transform: translate(-50%, -50%) scale(0.8);
-}
-
-/* CONTAINER */
-.ui-container {
-  background: rgba(255,255,255,0.2);
-  backdrop-filter: blur(15px);
-  padding: 30px;
-  border-radius: 25px;
+  background: linear-gradient(#2D9CDB, #BEE9FF);
+  font-family: sans-serif;
   text-align: center;
 }
 
 /* HEADER */
-.header img { width: 130px; }
+.header img {
+  width: 120px;
+}
 
-/* DOOR */
-.door-wrapper { perspective: 1200px; }
+/* WRAPPER */
+.door-wrapper {
+  perspective: 1200px;
+  position: relative;
+}
+
 .door-frame {
   width: 340px;
   height: 230px;
   position: relative;
 }
 
-/* INSIDE */
+/* 🌍 INSIDE (BEHIND DOOR) */
 .inside {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, #fff, #87CEFA);
+  background: radial-gradient(circle, #ffffff, #87CEFA);
   border-radius: 20px;
+
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
-  gap: 10px;
+
   opacity: 0;
-  transition: 0.5s;
+  transition: opacity 0.5s;
+
+  z-index: 1; /* 👈 FIX */
 }
-.inside.show { opacity: 1; }
+
+.inside.show {
+  opacity: 1;
+}
 
 /* CARDS */
+.results {
+  display: flex;
+  gap: 10px;
+}
+
 .card {
   background: white;
   border-radius: 10px;
   padding: 8px;
   width: 90px;
+  cursor: pointer;
 }
+
 .card img {
   width: 100%;
   border-radius: 8px;
 }
 
-/* DOOR */
+/* 🚪 DOOR */
 .door {
   position: absolute;
   width: 100%;
@@ -108,83 +82,76 @@ body {
   background: #FF7BA9;
   border-radius: 20px;
   border: 5px solid #1F3A5F;
+
   transform-origin: left;
-  transition: transform 0.8s ease;
-  z-index: 2;
-}
-.door.open { transform: rotateY(-120deg); }
+  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
 
-/* KNOB */
-.doraemon-knob {
-  width: 26px;
-  height: 26px;
+  z-index: 5; /* 👈 FIX */
+}
+
+/* OPEN */
+.door.open {
+  transform: rotateY(-120deg);
+}
+
+/* CLOSE */
+.door.close {
+  transform: rotateY(0deg);
+}
+
+/* 🔘 KNOB */
+.knob {
+  width: 18px;
+  height: 18px;
+  background: #1F3A5F;
   border-radius: 50%;
-  background: radial-gradient(circle, #fff, #bde3ff);
-  border: 3px solid #1F3A5F;
-  position: absolute;
-  right: 18px;
-  top: 55%;
-  transform: translateY(-50%);
-  z-index: 3;
-}
 
-/* COPTER */
-.copter {
   position: absolute;
-  width: 60px;
-  bottom: 20%;
-  left: 10%;
-  transition: all 1s ease;
-}
-.copter.fly {
-  bottom: 50%;
-  left: 45%;
-  transform: scale(0.3);
-  opacity: 0;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  z-index: 6; /* 👈 ABOVE DOOR */
 }
 
 /* NAV */
 .nav {
   margin-top: 30px;
   display: flex;
-  justify-content: center;
-  gap: 60px;
-}
-.icon img { width: 60px; }
-
-/* POCKET */
-.pocket-container {
-  margin-top: 20px;
-  position: relative;
-}
-#pocket { width: 90px; }
-
-.pocket-count {
-  position: absolute;
-  top: 0;
-  right: 45%;
-  background: red;
-  color: white;
-  border-radius: 50%;
-  padding: 3px 6px;
+  gap: 30px;
 }
 
-/* FLY */
-.fly-img {
-  position: fixed;
-  width: 60px;
-  height: 60px;
+.icon {
+  font-size: 20px;
+  cursor: pointer;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* DETAIL */
+.detail img {
+  width: 120px;
   border-radius: 10px;
-  object-fit: cover;
-  z-index: 999;
-  transition: all 0.8s ease;
+}
+
+.detail button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: none;
+  background: #FFD84D;
+  cursor: pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="ui-container">
+<div>
 
 <div class="header">
   <img src="doraemon.gif">
@@ -194,59 +161,40 @@ body {
 
 <div class="door-wrapper">
   <div class="door-frame">
+
     <div class="inside" id="inside"></div>
-    <div class="door" id="door"></div>
-    <div class="doraemon-knob"></div>
+
+    <div class="door" id="door">
+      <div class="knob"></div>
+    </div>
+
   </div>
 </div>
 
-<img src="copter.png" class="copter" id="copter">
-
 <div class="nav">
-  <div class="icon"><img src="locket.png"><br>Beach</div>
-  <div class="icon"><img src="locket.png"><br>City</div>
-  <div class="icon"><img src="locket.png"><br>Mountains</div>
-</div>
-
-<div class="pocket-container">
-  <img src="pocket.png" id="pocket">
-  <div class="pocket-count" id="pocketCount">0</div>
+  <div class="icon">🏝 Beach</div>
+  <div class="icon">🏙 City</div>
+  <div class="icon">🏔 Mountains</div>
 </div>
 
 </div>
-
-<div class="cursor" id="cursor"></div>
 
 <script>
-const cursor = document.getElementById("cursor");
-
-/* ✅ FIXED CURSOR TRACKING */
-window.addEventListener("mousemove", (e) => {
-  cursor.style.left = e.clientX + "px";
-  cursor.style.top = e.clientY + "px";
-});
-
-/* CLICK EFFECT */
-window.addEventListener("mousedown", () => cursor.classList.add("click"));
-window.addEventListener("mouseup", () => cursor.classList.remove("click"));
-
 const door = document.getElementById("door");
 const inside = document.getElementById("inside");
-const copter = document.getElementById("copter");
 
-let pocketItems = [];
-
+/* DATA */
 const data = {
   Beach: [
     {name:"Bali", img:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400"},
-    {name:"Maldives", img:"https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=400"},
-    {name:"Santorini", img: "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=400&auto=format&fit=crop"
+    {name:"Maldives", img:"https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400"},
+       {name:"Santorini", img: "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=400&auto=format&fit=crop"
     }
- ],
+      ],
   City: [
     {name:"NYC", img:"nyc.jpeg"},
     {name:"Tokyo", img:"https://images.unsplash.com/photo-1549692520-acc6669e2f0c?w=400"},
-    {name:"Paris", img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&auto=format&fit=crop"
+     {name:"Paris", img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&auto=format&fit=crop"
     },
   ],
   Mountains: [
@@ -256,48 +204,55 @@ const data = {
   ]
 };
 
-/* CATEGORY */
-document.querySelectorAll(".icon").forEach(icon=>{
-  icon.onclick=()=>{
-    const cat = icon.innerText.trim();
+/* CLICK */
+document.querySelectorAll(".icon").forEach(icon => {
+  icon.addEventListener("click", () => {
 
-    inside.innerHTML = data[cat].map(p=>`
-      <div class="card">
-        <img src="${p.img}">
-        <p>${p.name}</p>
-        <button onclick="addToPocket('${p.name}','${p.img}')">Add</button>
+    const category = icon.innerText.split(" ")[1];
+
+    inside.innerHTML = `
+      <div>
+        <h3>${category}</h3>
+        <div class="results">
+          ${data[category].map(place => `
+            <div class="card" onclick="expandPlace('${place.name}','${place.img}')">
+              <img src="${place.img}">
+              <p>${place.name}</p>
+            </div>
+          `).join("")}
+        </div>
       </div>
-    `).join("");
+    `;
 
-    setTimeout(()=>copter.classList.add("fly"),100);
-    setTimeout(()=>door.classList.add("open"),600);
-    setTimeout(()=>inside.classList.add("show"),900);
-  }
+    /* RESET */
+    door.classList.remove("close");
+    door.classList.remove("open");
+    inside.classList.remove("show");
+
+    /* OPEN */
+    setTimeout(() => door.classList.add("open"), 300);
+    setTimeout(() => inside.classList.add("show"), 700);
+
+    /* AUTO CLOSE */
+    setTimeout(() => {
+      inside.classList.remove("show");
+      door.classList.remove("open");
+      door.classList.add("close");
+    }, 3500);
+
+  });
 });
 
-/* POCKET */
-function addToPocket(name,img){
-  if(!pocketItems.includes(name)) pocketItems.push(name);
-  document.getElementById("pocketCount").innerText = pocketItems.length;
-
-  const flying = document.createElement("img");
-  flying.src = img;
-  flying.className = "fly-img";
-  flying.style.left = "50%";
-  flying.style.top = "50%";
-
-  document.body.appendChild(flying);
-
-  const rect = document.getElementById("pocket").getBoundingClientRect();
-
-  setTimeout(()=>{
-    flying.style.left = rect.left + "px";
-    flying.style.top = rect.top + "px";
-    flying.style.transform = "scale(0.2)";
-    flying.style.opacity = "0";
-  },50);
-
-  setTimeout(()=>flying.remove(),800);
+/* DETAIL */
+function expandPlace(name, img) {
+  inside.innerHTML = `
+    <div class="detail">
+      <h2>${name}</h2>
+      <img src="${img}">
+      <br>
+      <button onclick="location.reload()">⬅ Back</button>
+    </div>
+  `;
 }
 </script>
 
