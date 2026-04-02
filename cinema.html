@@ -2,15 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Cinema Khoj</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<title>Cinema Khoj – Bollywood Archive</title>
 
 <style>
 body {
   margin: 0;
   background: #7b0f0f;
-  font-family: 'Playfair Display', serif;
+  font-family: serif;
   color: white;
   display: flex;
   flex-direction: column;
@@ -19,25 +17,23 @@ body {
 
 /* HEADER */
 .header {
-  display: flex;
-  justify-content: space-between;
-  width: 80%;
   font-size: 32px;
-  margin: 20px 0;
-  font-family: 'Bebas Neue';
+  margin: 20px;
 }
 
-/* CLAPPER */
+/* 🎬 CLAPPER */
 .clapper {
   width: 320px;
   perspective: 600px;
 }
+
 .flap {
   height: 40px;
   background: black;
   transform-origin: top;
   transition: 0.4s;
 }
+
 .clap { transform: rotateX(-60deg); }
 
 .clapper-body {
@@ -46,95 +42,77 @@ body {
   border-radius: 10px;
 }
 
-.clapper input, .clapper select {
+.clapper input {
   width: 90%;
   margin: 5px 0;
 }
 
-/* 🎞 ROW */
-.film-row {
+/* 🎞 FILM STRIP */
+.container {
   width: 90%;
-  margin: 20px 0;
+  margin-top: 20px;
 }
 
-.row-title {
-  font-family: 'Bebas Neue';
-  font-size: 24px;
-  border-bottom: 2px solid gold;
+.era {
+  margin-bottom: 30px;
 }
 
-/* SCROLL FIX */
-.viewport {
-  overflow: hidden;
+.era h3 {
+  margin-left: 20px;
+  color: #ffcc00;
 }
 
-.strip {
+/* horizontal scroll */
+.film-strip {
   display: flex;
   gap: 20px;
-  width: max-content;
-  animation: scroll 25s linear infinite;
+  overflow-x: auto;
+  padding: 10px 20px;
 }
 
-.strip:hover {
-  animation-play-state: paused;
-}
-
-@keyframes scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-/* CARD */
 .frame {
-  flex-shrink: 0;
   background: #c9a66b;
-  padding: 8px;
+  padding: 10px;
   border-radius: 10px;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.frame:hover {
+  transform: scale(1.1);
 }
 
 .frame img {
-  width: 140px;
-  height: 200px;
+  width: 120px;
+  height: 170px;
   object-fit: cover;
 }
 
-.frame small {
-  display: block;
-  font-size: 10px;
-}
-
-.frame:hover { transform: scale(1.1); }
-
-/* TICKET */
+/* 🎟 TICKET */
 .ticket {
   margin: 20px;
-  width: 300px;
-  height: 160px;
+  width: 280px;
+  height: 150px;
   background: url("ticket.png") no-repeat center;
   background-size: contain;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: 0.3s;
 }
 
 .ticket-text {
-  color: #3b2a1a;
+  color: black;
+  font-weight: bold;
   text-align: center;
 }
 
-.torn {
-  transform: rotate(-5deg) scale(0.95);
-}
-
-/* GENRES */
+/* 🍿 GENRES */
 .genres button {
-  margin: 10px;
+  margin: 5px;
   padding: 10px;
   border-radius: 20px;
   border: none;
-  background: gold;
+  background: #ffcc00;
   cursor: pointer;
 }
 </style>
@@ -142,142 +120,139 @@ body {
 
 <body>
 
-<div class="header">
-  <div>Cinema</div>
-  <div>Khoj</div>
-</div>
+<div class="header">🎬 Cinema Khoj</div>
 
-<!-- CLAPPER -->
+<!-- 🎬 CLAPPER -->
 <div class="clapper">
   <div class="flap" id="flap"></div>
   <div class="clapper-body">
-    <input id="search" placeholder="🎬 Search movie">
-
-    <select id="yearFilter">
-      <option value="">All Eras</option>
-      <option value="1960s">1960s</option>
-      <option value="1970s">1970s</option>
-      <option value="1980s">1980s</option>
-      <option value="1990s">1990s</option>
-      <option value="2000s">2000s</option>
-    </select>
-
-    <input placeholder="Actor / Director">
+    <input id="search" placeholder="Search Bollywood film...">
   </div>
 </div>
 
-<!-- 🎞 BOLLYWOOD -->
-<div class="film-row">
-  <div class="row-title">Bollywood</div>
-  <div class="viewport">
-    <div class="strip" id="bolly"></div>
-  </div>
-</div>
+<!-- 🎞 FILM STRIPS -->
+<div class="container" id="container"></div>
 
-<!-- 🎞 HOLLYWOOD -->
-<div class="film-row">
-  <div class="row-title">Hollywood</div>
-  <div class="viewport">
-    <div class="strip" id="holly"></div>
-  </div>
-</div>
-
-<!-- 🎟 -->
-<div class="ticket" id="ticketBox">
+<!-- 🎟 TICKET -->
+<div class="ticket">
   <div class="ticket-text" id="ticket">🎟 Select a movie</div>
 </div>
 
-<!-- GENRE -->
+<!-- 🍿 GENRES -->
 <div class="genres">
-  <button>🍿 Action</button>
-  <button>🍿 Romance</button>
-  <button>🍿 Drama</button>
+  <button onclick="filterGenre('All')">All</button>
+  <button onclick="filterGenre('Drama')">Drama</button>
+  <button onclick="filterGenre('Romance')">Romance</button>
+  <button onclick="filterGenre('Action')">Action</button>
 </div>
 
 <script>
-
-/* DATA */
-const movies = [
-  {name:"Mother India", genre:"Drama", era:"1950s", industry:"Bollywood", img:"motherindia.jpg"},
-  {name:"Sholay", genre:"Action", era:"1970s", industry:"Bollywood", img:"sholay.jpg"},
-  {name:"DDLJ", genre:"Romance", era:"1990s", industry:"Bollywood", img:"https://images.unsplash.com/photo-1518929458119-e5bf444c30f4?w=400"},
-  {name:"Lagaan", genre:"Drama", era:"2000s", industry:"Bollywood", img:"https://images.unsplash.com/photo-1492724441997-5dc865305da7?w=400"},
-
-  {name:"Godfather", genre:"Drama", era:"1970s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400"},
-  {name:"Titanic", genre:"Romance", era:"1990s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400"},
-  {name:"Dark Knight", genre:"Action", era:"2000s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=400"},
-  {name:"Psycho", genre:"Drama", era:"1960s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1517602302552-471fe67acf66?w=400"}
-];
-
-let filteredMovies = [...movies];
-
-const bolly = document.getElementById("bolly");
-const holly = document.getElementById("holly");
-const ticket = document.getElementById("ticket");
-const ticketBox = document.getElementById("ticketBox");
 const flap = document.getElementById("flap");
-const search = document.getElementById("search");
-const yearFilter = document.getElementById("yearFilter");
+const container = document.getElementById("container");
+const ticket = document.getElementById("ticket");
 
-/* RENDER */
-function render(list){
-  bolly.innerHTML = "";
-  holly.innerHTML = "";
+/* 🎬 DATA */
+const moviesByEra = {
+  "1950s": [
+    { name: "Mother India", genre: "Drama", img: "https://upload.wikimedia.org/wikipedia/en/5/51/Mother_India_poster.jpg" },
+    { name: "Pyaasa", genre: "Romance", img: "https://upload.wikimedia.org/wikipedia/en/3/3b/Pyaasa_poster.jpg" }
+  ],
+  "1960s": [
+    { name: "Mughal-e-Azam", genre: "Drama", img: "https://upload.wikimedia.org/wikipedia/en/1/1c/Mughal-e-Azam_poster.jpg" },
+    { name: "Guide", genre: "Drama", img: "https://upload.wikimedia.org/wikipedia/en/7/7d/Guide_film_poster.jpg" }
+  ],
+  "1970s": [
+    { name: "Sholay", genre: "Action", img: "https://upload.wikimedia.org/wikipedia/en/5/52/Sholay.jpg" },
+    { name: "Deewaar", genre: "Drama", img: "https://upload.wikimedia.org/wikipedia/en/9/9f/Deewaar.jpg" }
+  ],
+  "1980s": [
+    { name: "Mr India", genre: "Action", img: "https://upload.wikimedia.org/wikipedia/en/8/8e/Mr._India_film_poster.jpg" },
+    { name: "QSQT", genre: "Romance", img: "https://upload.wikimedia.org/wikipedia/en/3/3d/Qsqt.jpg" }
+  ],
+  "1990s": [
+    { name: "DDLJ", genre: "Romance", img: "https://upload.wikimedia.org/wikipedia/en/8/80/Dilwale_Dulhania_Le_Jayenge_poster.jpg" },
+    { name: "HAHK", genre: "Drama", img: "https://upload.wikimedia.org/wikipedia/en/7/7e/Hum_Aapke_Hain_Koun..!jpg" }
+  ],
+  "2000s": [
+    { name: "Lagaan", genre: "Drama", img: "https://upload.wikimedia.org/wikipedia/en/b/b6/Lagaan.jpg" },
+    { name: "K3G", genre: "Drama", img: "https://upload.wikimedia.org/wikipedia/en/4/4b/K3G_poster.jpg" }
+  ]
+};
 
-  list.forEach(m=>{
-    const div=document.createElement("div");
-    div.className="frame";
-    div.innerHTML=`<img src="${m.img}"><small>${m.era}</small>`;
-    div.onclick=()=>selectMovie(m.name);
+/* 🎞 RENDER */
+function renderMovies(filter = "All") {
+  container.innerHTML = "";
 
-    if(m.industry==="Bollywood") bolly.appendChild(div);
-    else holly.appendChild(div);
+  Object.keys(moviesByEra).forEach(era => {
+    const eraDiv = document.createElement("div");
+    eraDiv.className = "era";
+
+    const filteredMovies = moviesByEra[era].filter(m =>
+      filter === "All" || m.genre === filter
+    );
+
+    if (filteredMovies.length === 0) return;
+
+    eraDiv.innerHTML = `
+      <h3>${era}</h3>
+      <div class="film-strip">
+        ${filteredMovies.map(movie => `
+          <div class="frame" onclick="selectMovie('${movie.name}')">
+            <img src="${movie.img}">
+          </div>
+        `).join("")}
+      </div>
+    `;
+
+    container.appendChild(eraDiv);
   });
-
-  bolly.innerHTML += bolly.innerHTML;
-  holly.innerHTML += holly.innerHTML;
 }
 
-render(filteredMovies);
+renderMovies();
 
-/* SEARCH */
-search.addEventListener("keydown", e=>{
-  if(e.key==="Enter"){
+/* 🎟 SELECT */
+function selectMovie(name) {
+  ticket.innerHTML = `🎟 ${name}<br>Now Showing ✨`;
+}
+
+/* 🍿 FILTER */
+function filterGenre(genre) {
+  renderMovies(genre);
+}
+
+/* 🎬 SEARCH */
+document.getElementById("search").addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+
     flap.classList.add("clap");
     setTimeout(()=>flap.classList.remove("clap"),300);
 
-    const val = search.value.toLowerCase();
-    filteredMovies = movies.filter(m => m.name.toLowerCase().includes(val));
-    render(filteredMovies);
+    const value = e.target.value.toLowerCase();
+
+    container.innerHTML = "";
+
+    Object.keys(moviesByEra).forEach(era => {
+      const matches = moviesByEra[era].filter(m =>
+        m.name.toLowerCase().includes(value)
+      );
+
+      if (matches.length) {
+        const div = document.createElement("div");
+        div.innerHTML = `
+          <h3>${era}</h3>
+          <div class="film-strip">
+            ${matches.map(m => `
+              <div class="frame" onclick="selectMovie('${m.name}')">
+                <img src="${m.img}">
+              </div>
+            `).join("")}
+          </div>
+        `;
+        container.appendChild(div);
+      }
+    });
   }
 });
-
-/* ERA */
-yearFilter.addEventListener("change", ()=>{
-  const val = yearFilter.value;
-  filteredMovies = val ? movies.filter(m=>m.era===val) : movies;
-  render(filteredMovies);
-});
-
-/* GENRE */
-document.querySelectorAll(".genres button").forEach(btn=>{
-  btn.onclick=()=>{
-    const g = btn.innerText.replace("🍿","").trim();
-    filteredMovies = movies.filter(m=>m.genre===g);
-    render(filteredMovies);
-  };
-});
-
-/* TICKET */
-function selectMovie(name){
-  ticketBox.classList.add("torn");
-
-  setTimeout(()=>{
-    ticket.innerHTML = `🎟 ${name}<br>Now Showing ✨`;
-    ticketBox.classList.remove("torn");
-  },300);
-}
-
 </script>
 
 </body>
