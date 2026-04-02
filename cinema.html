@@ -2,97 +2,71 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Cinema Khoj – Bollywood Archive</title>
+<title>Cinema Khoj – Fixed Scroll</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 body {
   margin: 0;
-  background: #7b0f0f;
-  font-family: serif;
+  font-family: 'Playfair Display', serif;
   color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  overflow: hidden;
+
+  background:
+    radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px),
+    #5a0c0c;
+  background-size: 4px 4px;
 }
 
 /* HEADER */
 .header {
-  font-size: 32px;
+  text-align: center;
+  font-family: 'Bebas Neue';
+  font-size: 40px;
   margin: 20px;
 }
 
-/* 🎬 CLAPPER */
-.clapper {
-  width: 320px;
-  perspective: 600px;
+/* 🎞 CONTAINER */
+.film-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
-.flap {
-  height: 40px;
-  background: black;
-  transform-origin: top;
-  transition: 0.4s;
-}
-
-.clap { transform: rotateX(-60deg); }
-
-.clapper-body {
-  background: #eee;
-  padding: 15px;
-  border-radius: 10px;
-}
-
-.clapper input {
-  width: 90%;
-  margin: 5px 0;
-}
-
-/* 🎞 FILM STRIP */
-.container {
-  width: 90%;
-  margin-top: 20px;
-}
-
-.era {
-  margin-bottom: 30px;
-}
-
-.era h3 {
-  margin-left: 20px;
-  color: #ffcc00;
-}
-
-/* horizontal scroll */
+/* 🎞 STRIP */
 .film-strip {
   display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  padding: 10px 20px;
+  gap: 30px;
+  width: max-content;
+  animation: scroll 60s linear infinite;
 }
 
+/* KEY FIX */
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* FRAME */
 .frame {
   background: #c9a66b;
   padding: 10px;
   border-radius: 10px;
   cursor: pointer;
-  transition: 0.2s;
-}
-
-.frame:hover {
-  transform: scale(1.1);
 }
 
 .frame img {
-  width: 120px;
-  height: 170px;
+  width: 130px;
+  height: 180px;
   object-fit: cover;
 }
 
 /* 🎟 TICKET */
 .ticket {
-  margin: 20px;
-  width: 280px;
-  height: 150px;
+  margin: 20px auto;
+  width: 300px;
+  height: 160px;
   background: url("ticket.png") no-repeat center;
   background-size: contain;
   display: flex;
@@ -103,17 +77,15 @@ body {
 .ticket-text {
   color: black;
   font-weight: bold;
-  text-align: center;
 }
 
-/* 🍿 GENRES */
-.genres button {
-  margin: 5px;
-  padding: 10px;
-  border-radius: 20px;
-  border: none;
-  background: #ffcc00;
-  cursor: pointer;
+/* ANIMATION */
+.ticket.animate {
+  animation: tear 0.4s;
+}
+
+@keyframes tear {
+  50% { transform: scale(0.9) rotate(-3deg); }
 }
 </style>
 </head>
@@ -122,137 +94,60 @@ body {
 
 <div class="header">🎬 Cinema Khoj</div>
 
-<!-- 🎬 CLAPPER -->
-<div class="clapper">
-  <div class="flap" id="flap"></div>
-  <div class="clapper-body">
-    <input id="search" placeholder="Search Bollywood film...">
-  </div>
+<div class="film-container">
+  <div class="film-strip" id="filmStrip"></div>
 </div>
 
-<!-- 🎞 FILM STRIPS -->
-<div class="container" id="container"></div>
-
-<!-- 🎟 TICKET -->
-<div class="ticket">
+<div class="ticket" id="ticketBox">
   <div class="ticket-text" id="ticket">🎟 Select a movie</div>
 </div>
 
-<!-- 🍿 GENRES -->
-<div class="genres">
-  <button onclick="filterGenre('All')">All</button>
-  <button onclick="filterGenre('Drama')">Drama</button>
-  <button onclick="filterGenre('Romance')">Romance</button>
-  <button onclick="filterGenre('Action')">Action</button>
-</div>
-
 <script>
-const flap = document.getElementById("flap");
-const container = document.getElementById("container");
+const strip = document.getElementById("filmStrip");
 const ticket = document.getElementById("ticket");
+const ticketBox = document.getElementById("ticketBox");
 
 /* 🎬 DATA */
-const moviesByEra = {
-  "1950s": [
-    { name: "Mother India", genre: "Drama", img: "https://upload.wikimedia.org/wikipedia/en/5/51/Mother_India_poster.jpg" },
-    { name: "Pyaasa", genre: "Romance", img: "https://upload.wikimedia.org/wikipedia/en/3/3b/Pyaasa_poster.jpg" }
-  ],
-  "1960s": [
-    { name: "Mughal-e-Azam", genre: "Drama", img: "https://upload.wikimedia.org/wikipedia/en/1/1c/Mughal-e-Azam_poster.jpg" },
-    { name: "Guide", genre: "Drama", img: "https://upload.wikimedia.org/wikipedia/en/7/7d/Guide_film_poster.jpg" }
-  ],
-  "1970s": [
-    { name: "Sholay", genre: "Action", img: "https://upload.wikimedia.org/wikipedia/en/5/52/Sholay.jpg" },
-    { name: "Deewaar", genre: "Drama", img: "https://upload.wikimedia.org/wikipedia/en/9/9f/Deewaar.jpg" }
-  ],
-  "1980s": [
-    { name: "Mr India", genre: "Action", img: "https://upload.wikimedia.org/wikipedia/en/8/8e/Mr._India_film_poster.jpg" },
-    { name: "QSQT", genre: "Romance", img: "https://upload.wikimedia.org/wikipedia/en/3/3d/Qsqt.jpg" }
-  ],
-  "1990s": [
-    { name: "DDLJ", genre: "Romance", img: "https://upload.wikimedia.org/wikipedia/en/8/80/Dilwale_Dulhania_Le_Jayenge_poster.jpg" },
-    { name: "HAHK", genre: "Drama", img: "https://upload.wikimedia.org/wikipedia/en/7/7e/Hum_Aapke_Hain_Koun..!jpg" }
-  ],
-  "2000s": [
-    { name: "Lagaan", genre: "Drama", img: "https://upload.wikimedia.org/wikipedia/en/b/b6/Lagaan.jpg" },
-    { name: "K3G", genre: "Drama", img: "https://upload.wikimedia.org/wikipedia/en/4/4b/K3G_poster.jpg" }
-  ]
-};
+const movies = [
+  { name:"Mother India", img:"motherindia.jpg" },
+  { name:"Pyaasa", img:"pyaasa.jpg" },
+  { name:"Mughal-e-Azam", img:"https://upload.wikimedia.org/wikipedia/en/1/1c/Mughal-e-Azam_poster.jpg" },
+  { name:"Guide", img:"guide.jpg" },
+  { name:"Sholay", img:"sholay.jpg" },
+  { name:"Deewaar", img:"https://upload.wikimedia.org/wikipedia/en/9/9f/Deewaar.jpg" },
+  { name:"DDLJ", img:"https://upload.wikimedia.org/wikipedia/en/8/80/Dilwale_Dulhania_Le_Jayenge_poster.jpg" },
+  { name:"Lagaan", img:"https://upload.wikimedia.org/wikipedia/en/b/b6/Lagaan.jpg" }
+];
 
-/* 🎞 RENDER */
-function renderMovies(filter = "All") {
-  container.innerHTML = "";
+/* 🎞 TRUE LOOP FIX */
+function renderMovies() {
+  strip.innerHTML = "";
 
-  Object.keys(moviesByEra).forEach(era => {
-    const eraDiv = document.createElement("div");
-    eraDiv.className = "era";
+  const fullList = [...movies, ...movies]; // 🔥 key fix
 
-    const filteredMovies = moviesByEra[era].filter(m =>
-      filter === "All" || m.genre === filter
-    );
+  fullList.forEach(movie => {
+    const div = document.createElement("div");
+    div.className = "frame";
 
-    if (filteredMovies.length === 0) return;
+    div.innerHTML = `<img src="${movie.img}">`;
 
-    eraDiv.innerHTML = `
-      <h3>${era}</h3>
-      <div class="film-strip">
-        ${filteredMovies.map(movie => `
-          <div class="frame" onclick="selectMovie('${movie.name}')">
-            <img src="${movie.img}">
-          </div>
-        `).join("")}
-      </div>
-    `;
+    div.onclick = () => selectMovie(movie.name);
 
-    container.appendChild(eraDiv);
+    strip.appendChild(div);
   });
 }
 
 renderMovies();
 
-/* 🎟 SELECT */
+/* 🎟 FIXED TICKET */
 function selectMovie(name) {
-  ticket.innerHTML = `🎟 ${name}<br>Now Showing ✨`;
+  ticketBox.classList.remove("animate");
+
+  setTimeout(() => {
+    ticket.innerHTML = `🎟 ${name}<br>Now Showing ✨`;
+    ticketBox.classList.add("animate");
+  }, 50);
 }
-
-/* 🍿 FILTER */
-function filterGenre(genre) {
-  renderMovies(genre);
-}
-
-/* 🎬 SEARCH */
-document.getElementById("search").addEventListener("keydown", e => {
-  if (e.key === "Enter") {
-
-    flap.classList.add("clap");
-    setTimeout(()=>flap.classList.remove("clap"),300);
-
-    const value = e.target.value.toLowerCase();
-
-    container.innerHTML = "";
-
-    Object.keys(moviesByEra).forEach(era => {
-      const matches = moviesByEra[era].filter(m =>
-        m.name.toLowerCase().includes(value)
-      );
-
-      if (matches.length) {
-        const div = document.createElement("div");
-        div.innerHTML = `
-          <h3>${era}</h3>
-          <div class="film-strip">
-            ${matches.map(m => `
-              <div class="frame" onclick="selectMovie('${m.name}')">
-                <img src="${m.img}">
-              </div>
-            `).join("")}
-          </div>
-        `;
-        container.appendChild(div);
-      }
-    });
-  }
-});
 </script>
 
 </body>
