@@ -118,133 +118,32 @@ body {
     top: 5px;
   }
 }
-/* 🔥 SIDE PANEL (MATCHES REFERENCE) */
+
+/* SIDE PANEL */
 .side-panel {
   position: absolute;
-  right: -130px;
+  right: -120px;
   top: 0;
-  width: 110px;
+  width: 100px;
   height: 100%;
-  background: linear-gradient(#d9d9d9, #bfbfbf);
-  border-radius: 25px;
-  padding: 12px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
-}
-
-/* 🟢 LED DISPLAY */
-.panel-led {
-  background: #111;
-  color: #00ff00;
-  font-size: 22px;
+  background: #ccc;
+  border-radius: 20px;
   padding: 10px;
-  border-radius: 12px;
-  width: 70px;
+}
+
+.panel-led {
+  background: #222;
+  color: #0f0;
   text-align: center;
-
-  font-family: monospace;
-  letter-spacing: 2px;
-
-  box-shadow: inset 0 0 10px #00ff00;
+  margin-bottom: 10px;
 }
 
-/* 🔴 LIGHTS */
-.lights {
-  display: flex;
-  gap: 10px;
-}
-
-.light {
-  width: 10px;
-  height: 10px;
+.coin-btn {
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  box-shadow: 0 0 6px rgba(0,0,0,0.6);
-}
-
-.green {
-  background: lime;
-  box-shadow: 0 0 10px lime;
-}
-
-.red {
-  background: red;
-  box-shadow: 0 0 10px red;
-}
-
-/* 🪙 COIN SLOT */
-.coin-slot {
-  width: 20px;
-  height: 45px;
-  background: black;
-  border-radius: 4px;
-  box-shadow: inset 0 0 8px #000;
-}
-
-/* 🪙 COIN */
-.coin {
-  width: 26px;
-  height: 26px;
-  background: radial-gradient(circle, gold, orange);
-  border-radius: 50%;
-  cursor: pointer;
-
-  box-shadow: 0 0 10px gold;
-  transition: 0.5s;
-}
-
-/* 💥 INSERT ANIMATION */
-.coin.insert {
-  transform: translateY(-50px) scale(0.5);
-  opacity: 0;
-}
-
-/* 🔢 KEYPAD GRID (VISUAL) */
-.mini-grid {
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 5px;
-}
-
-.mini-grid div {
-  width: 22px;
-  height: 22px;
-  background: linear-gradient(#bbb,#888);
-  border-radius: 4px;
-  box-shadow: inset 0 0 5px #555;
-}
-
-/* 🎮 JOYSTICK */
-.joystick {
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #eee, #777);
-  box-shadow: inset 0 0 10px #555, 0 0 10px rgba(0,0,0,0.5);
-}
-
-/* 🔻 ARROW */
-.arrow {
-  width: 0;
-  height: 0;
-  border-left: 18px solid transparent;
-  border-right: 18px solid transparent;
-  border-top: 30px solid red;
-
-  filter: drop-shadow(0 0 5px red);
-}
-
-/* 📦 PANEL TRAY */
-.panel-tray {
-  width: 65px;
-  height: 45px;
-  background: #333;
-  border-radius: 10px;
-  box-shadow: inset 0 0 10px black;
+  background: gold;
+  border: none;
 }
 </style>
 </head>
@@ -291,23 +190,7 @@ body {
   <div class="panel-led" id="panelLED">A1</div>
   <button class="coin-btn" onclick="insertCoin()">🪙</button>
 </div>
-<div class="lights">
-  <div class="light green"></div>
-  <div class="light red"></div>
-</div>
 
-<div class="coin-slot"></div>
-<div class="coin" id="coin"></div>
-
-<div class="mini-grid">
-  <div></div><div></div><div></div>
-  <div></div><div></div><div></div>
-  <div></div><div></div><div></div>
-</div>
-
-<div class="joystick"></div>
-<div class="arrow"></div>
-<div class="panel-tray"></div>
 </div>
 
 <script>
