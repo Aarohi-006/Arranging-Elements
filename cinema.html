@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Cinema Khoj – Fixed Scroll</title>
+<title>Cinema Khoj – Final</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 
@@ -11,7 +11,10 @@ body {
   margin: 0;
   font-family: 'Playfair Display', serif;
   color: white;
-  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   background:
     radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px),
@@ -21,28 +24,60 @@ body {
 
 /* HEADER */
 .header {
-  text-align: center;
   font-family: 'Bebas Neue';
   font-size: 40px;
   margin: 20px;
 }
 
-/* 🎞 CONTAINER */
+/* 🎬 CLAPPER */
+.clapper {
+  width: 320px;
+  perspective: 600px;
+  margin-bottom: 20px;
+}
+
+.flap {
+  height: 40px;
+  background: black;
+  transform-origin: top;
+  transition: 0.4s;
+}
+
+.clap { transform: rotateX(-60deg); }
+
+.clapper-body {
+  background: #eee;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.clapper input {
+  width: 100%;
+  padding: 8px;
+}
+
+/* 🎞 FILM STRIP */
 .film-container {
   width: 100%;
   overflow: hidden;
-  position: relative;
+
+  display: flex;
+  justify-content: center;
+  margin: 40px 0;
 }
 
-/* 🎞 STRIP */
 .film-strip {
   display: flex;
   gap: 30px;
   width: max-content;
+
   animation: scroll 60s linear infinite;
 }
 
-/* KEY FIX */
+.film-strip:hover {
+  animation-play-state: paused;
+}
+
 @keyframes scroll {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -54,6 +89,11 @@ body {
   padding: 10px;
   border-radius: 10px;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.frame:hover {
+  transform: scale(1.1);
 }
 
 .frame img {
@@ -64,28 +104,45 @@ body {
 
 /* 🎟 TICKET */
 .ticket {
-  margin: 20px auto;
   width: 300px;
   height: 160px;
   background: url("ticket.png") no-repeat center;
   background-size: contain;
+
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 20px;
 }
 
 .ticket-text {
   color: black;
   font-weight: bold;
+  text-align: center;
 }
 
-/* ANIMATION */
+/* TEAR */
 .ticket.animate {
   animation: tear 0.4s;
 }
 
 @keyframes tear {
   50% { transform: scale(0.9) rotate(-3deg); }
+}
+
+/* 🍿 GENRES */
+.genres {
+  margin: 10px;
+}
+
+.genres button {
+  margin: 5px;
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: none;
+  background: #ffcc00;
+  cursor: pointer;
+  font-family: 'Bebas Neue';
 }
 </style>
 </head>
@@ -94,38 +151,57 @@ body {
 
 <div class="header">🎬 Cinema Khoj</div>
 
+<!-- 🎬 CLAPPER -->
+<div class="clapper">
+  <div class="flap" id="flap"></div>
+  <div class="clapper-body">
+    <input id="search" placeholder="Search Bollywood film...">
+  </div>
+</div>
+
+<!-- 🎞 FILM STRIP -->
 <div class="film-container">
   <div class="film-strip" id="filmStrip"></div>
 </div>
 
+<!-- 🎟 TICKET -->
 <div class="ticket" id="ticketBox">
   <div class="ticket-text" id="ticket">🎟 Select a movie</div>
+</div>
+
+<!-- 🍿 GENRES -->
+<div class="genres">
+  <button onclick="filterGenre('All')">All</button>
+  <button onclick="filterGenre('Drama')">Drama</button>
+  <button onclick="filterGenre('Romance')">Romance</button>
+  <button onclick="filterGenre('Action')">Action</button>
 </div>
 
 <script>
 const strip = document.getElementById("filmStrip");
 const ticket = document.getElementById("ticket");
 const ticketBox = document.getElementById("ticketBox");
+const flap = document.getElementById("flap");
 
 /* 🎬 DATA */
 const movies = [
-  { name:"Mother India", img:"motherindia.jpg" },
-  { name:"Pyaasa", img:"pyaasa.jpg" },
-  { name:"Mughal-e-Azam", img:"https://upload.wikimedia.org/wikipedia/en/1/1c/Mughal-e-Azam_poster.jpg" },
-  { name:"Guide", img:"guide.jpg" },
-  { name:"Sholay", img:"sholay.jpg" },
-  { name:"Deewaar", img:"https://upload.wikimedia.org/wikipedia/en/9/9f/Deewaar.jpg" },
-  { name:"DDLJ", img:"https://upload.wikimedia.org/wikipedia/en/8/80/Dilwale_Dulhania_Le_Jayenge_poster.jpg" },
-  { name:"Lagaan", img:"https://upload.wikimedia.org/wikipedia/en/b/b6/Lagaan.jpg" }
+  { name:"Mother India", genre:"Drama", img:"motherindia.jpg" },
+  { name:"Pyaasa", genre:"Romance", img:"pyaasa.jpg" },
+  { name:"Mughal-e-Azam", genre:"Drama", img:"mughal-e-azam.jpg" },
+  { name:"Guide", genre:"Drama", img:"guide.jpg" },
+  { name:"Sholay", genre:"Action", img:"sholay.jpg" },
+  { name:"Deewaar", genre:"Drama", img:"deewar.jpg" },
+  { name:"DDLJ", genre:"Romance", img:"https://upload.wikimedia.org/wikipedia/en/8/80/Dilwale_Dulhania_Le_Jayenge_poster.jpg" },
+  { name:"Lagaan", genre:"Drama", img:"https://upload.wikimedia.org/wikipedia/en/b/b6/Lagaan.jpg" }
 ];
 
-/* 🎞 TRUE LOOP FIX */
-function renderMovies() {
+/* 🎞 RENDER */
+function renderMovies(list) {
   strip.innerHTML = "";
 
-  const fullList = [...movies, ...movies]; // 🔥 key fix
+  const full = [...list, ...list]; // loop fix
 
-  fullList.forEach(movie => {
+  full.forEach(movie => {
     const div = document.createElement("div");
     div.className = "frame";
 
@@ -137,9 +213,9 @@ function renderMovies() {
   });
 }
 
-renderMovies();
+renderMovies(movies);
 
-/* 🎟 FIXED TICKET */
+/* 🎟 TICKET */
 function selectMovie(name) {
   ticketBox.classList.remove("animate");
 
@@ -148,6 +224,29 @@ function selectMovie(name) {
     ticketBox.classList.add("animate");
   }, 50);
 }
+
+/* 🍿 FILTER */
+function filterGenre(genre) {
+  if (genre === "All") renderMovies(movies);
+  else renderMovies(movies.filter(m => m.genre === genre));
+}
+
+/* 🎬 SEARCH */
+document.getElementById("search").addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+
+    flap.classList.add("clap");
+    setTimeout(()=>flap.classList.remove("clap"),300);
+
+    const value = e.target.value.toLowerCase();
+
+    const filtered = movies.filter(m =>
+      m.name.toLowerCase().includes(value)
+    );
+
+    renderMovies(filtered.length ? filtered : movies);
+  }
+});
 </script>
 
 </body>
