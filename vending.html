@@ -28,21 +28,19 @@ body {
 /* DISPLAY */
 .display {
   background: black;
-  color: #00ff99;
+  color: #00ff00;
   padding: 15px;
   border-radius: 12px;
   text-align: center;
-  border: 2px solid #00ffcc;
+  font-size: 18px;
 }
 
 /* GRID */
 .grid {
-  position: relative;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3,1fr);
   gap: 15px;
   margin-top: 15px;
-  min-height: 300px;
 }
 
 .item {
@@ -54,96 +52,140 @@ body {
 
 .item img {
   width: 100%;
-  height: 80px;
+  height: 90px;
   object-fit: contain;
 }
 
 .item.active {
-  box-shadow: 0 0 20px red, 0 0 40px yellow;
-}
-
-/* DROP */
-.fall {
-  position: absolute;
-  width: 70px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: drop 1s ease forwards;
-  z-index: 10;
-}
-
-@keyframes drop {
-  0% { top: 0; }
-  100% { top: 320px; }
+  outline: 4px solid red;
+  transform: scale(1.05);
 }
 
 /* KEYPAD */
 .keypad {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3,1fr);
   gap: 10px;
   margin-top: 15px;
 }
 
 .keypad button {
-  border-radius: 50%;
-  background: red;
-  color: white;
   padding: 12px;
+  background: #444;
+  color: white;
   border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-/* 🟥 TRAY (REAL POSITION) */
-.tray-slot {
+/* TRAY */
+.tray {
   margin-top: 20px;
-  height: 60px;
-  background: #111;
+  background: red;
+  padding: 15px;
   border-radius: 10px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: inset 0 0 20px black;
-}
-
-.tray-item {
-  position: absolute;
-  top: -80px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 70px;
-  animation: dropToTray 0.8s ease forwards;
-}
-
-@keyframes dropToTray {
-  to {
-    top: 5px;
-  }
+  text-align: center;
 }
 
 /* SIDE PANEL */
-.side-panel {
+.panel {
   position: absolute;
-  right: -120px;
+  right: -130px;
   top: 0;
-  width: 100px;
+  width: 110px;
   height: 100%;
   background: #ccc;
   border-radius: 20px;
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
-.panel-led {
-  background: #222;
-  color: #0f0;
+/* LED */
+.led {
+  background: #111;
+  color: #00ff00;
+  font-size: 20px;
+  padding: 10px;
+  border-radius: 10px;
+  width: 70px;
   text-align: center;
-  margin-bottom: 10px;
 }
 
-.coin-btn {
-  width: 50px;
-  height: 50px;
+/* LIGHTS */
+.lights {
+  display: flex;
+  gap: 10px;
+}
+.light {
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
+}
+.green { background: lime; }
+.red { background: red; }
+
+/* COIN SLOT */
+.slot {
+  width: 20px;
+  height: 40px;
+  background: black;
+}
+
+/* COIN */
+.coin {
+  width: 25px;
+  height: 25px;
   background: gold;
-  border: none;
+  border-radius: 50%;
+  position: relative;
+  transition: 0.6s;
+}
+
+/* INSERT ANIMATION */
+.coin.insert {
+  transform: translateY(-40px) scale(0.6);
+  opacity: 0;
+}
+
+/* KEYPAD PANEL */
+.mini-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 4px;
+}
+.mini-grid div {
+  width: 20px;
+  height: 20px;
+  background: #999;
+}
+
+/* JOYSTICK */
+.joystick {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ddd, #888);
+  cursor: pointer;
+}
+
+/* ARROW */
+.arrow {
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 25px solid red;
+}
+
+/* TRAY SLOT */
+.tray-slot {
+  width: 60px;
+  height: 40px;
+  background: #333;
+  border-radius: 8px;
 }
 </style>
 </head>
@@ -152,9 +194,11 @@ body {
 
 <div class="machine">
 
+
 <div class="display" id="display">PRESS START</div>
 
-<section class="grid" id="grid">
+1</button>
+  <button onclick="pressKey('2')"><section class="grid" id="grid">
 
 <!-- A -->
 <div class="item" data-code="A1" data-name="Doritos"><img src="doritos.jpeg"><p>Doritos</p></div>
@@ -177,114 +221,117 @@ body {
   <button onclick="pressKey('A')">A</button>
   <button onclick="pressKey('B')">B</button>
   <button onclick="pressKey('C')">C</button>
-  <button onclick="pressKey('1')">1</button>
-  <button onclick="pressKey('2')">2</button>
+  <button onclick="pressKey('1')">2</button>
   <button onclick="pressKey('3')">3</button>
 </div>
 
-<!-- 🟥 REAL TRAY -->
-<div class="tray-slot" id="traySlot"></div>
 
-<!-- SIDE PANEL -->
-<div class="side-panel">
-  <div class="panel-led" id="panelLED">A1</div>
-  <button class="coin-btn" onclick="insertCoin()">🪙</button>
+<div class="tray" id="tray">Waiting...</div>
+
+<!-- RIGHT PANEL -->
+<div class="panel">
+
+  <div class="led" id="led">00</div>
+
+  <div class="lights">
+    <div class="light green"></div>
+    <div class="light red"></div>
+  </div>
+
+  <div class="slot"></div>
+  <div class="coin" id="coin"></div>
+
+  <div class="mini-grid">
+    <div></div><div></div><div></div>
+    <div></div><div></div><div></div>
+    <div></div><div></div><div></div>
+  </div>
+
+  <div class="joystick" onclick="moveJoystick()"></div>
+
+  <div class="arrow"></div>
+  <div class="tray-slot"></div>
+
 </div>
 
 </div>
 
 <script>
 const items = document.querySelectorAll(".item");
+const led = document.getElementById("led");
+const tray = document.getElementById("tray");
+const coin = document.getElementById("coin");
 const display = document.getElementById("display");
-const panelLED = document.getElementById("panelLED");
-const traySlot = document.getElementById("traySlot");
 
 let index = 0;
-let credits = 0;
-let inputCode = "";
+let hasCoin = false;
+let input = "";
 const cols = 3;
 
-/* INIT */
-window.onload = () => document.body.focus();
+/* INSERT COIN */
+coin.onclick = () => {
+  coin.classList.add("insert");
 
-/* COIN */
-function insertCoin() {
-  credits++;
-  display.innerText = "CREDITS: " + credits;
-}
+  setTimeout(()=>{
+    coin.classList.remove("insert");
+    hasCoin = true;
+    display.innerText = "SELECT ITEM";
+  },600);
+};
 
 /* UPDATE */
-function updateSelection() {
-  items.forEach(i => i.classList.remove("active"));
+function update(){
+  items.forEach(i=>i.classList.remove("active"));
   items[index].classList.add("active");
-  panelLED.innerText = items[index].dataset.code;
+  led.innerText = items[index].dataset.code;
 }
-updateSelection();
+update();
 
 /* JOYSTICK */
-document.addEventListener("keydown", (e) => {
+function moveJoystick(){
+  if(!hasCoin) return;
 
-  if (credits <= 0) return;
+  index = (index + 1) % items.length;
+  update();
+}
 
-  let row = Math.floor(index / cols);
-  let col = index % cols;
+/* KEYBOARD */
+document.addEventListener("keydown", e=>{
+  if(!hasCoin) return;
 
-  if (e.key === "ArrowRight") col++;
-  if (e.key === "ArrowLeft") col--;
-  if (e.key === "ArrowDown") row++;
-  if (e.key === "ArrowUp") row--;
+  if(e.key==="ArrowRight") index++;
+  if(e.key==="ArrowLeft") index--;
 
-  col = Math.max(0, Math.min(2, col));
-  row = Math.max(0, Math.min(2, row));
+  index = (index + items.length) % items.length;
+  update();
 
-  index = row * cols + col;
-  updateSelection();
-
-  if (e.key === "Enter") dispense(items[index]);
+  if(e.key==="Enter") dispense(items[index]);
 });
 
 /* KEYPAD */
-function pressKey(key) {
-  if (credits <= 0) return;
+function press(k){
+  if(!hasCoin) return;
 
-  inputCode += key;
-  panelLED.innerText = inputCode;
+  input += k;
+  led.innerText = input;
 
-  if (inputCode.length === 2) {
-    const item = [...items].find(i => i.dataset.code === inputCode);
+  if(input.length===2){
+    const item = [...items].find(i=>i.dataset.code===input);
+    if(item) dispense(item);
+    else display.innerText="INVALID";
 
-    if (item) dispense(item);
-    else display.innerText = "INVALID";
-
-    inputCode = "";
+    input="";
   }
 }
 
 /* DISPENSE */
-function dispense(item) {
-
-  if (item.dataset.code.startsWith("C")) {
-    display.innerText = "🎰 BONUS!";
-    const rewards = ["FREE SNACK 🎉","TRY AGAIN","JACKPOT 🏆"];
-    setTimeout(()=>{
-      display.innerText = rewards[Math.floor(Math.random()*rewards.length)];
-      credits--;
-    },1000);
-    return;
-  }
-
-  display.innerText = "DISPENSING...";
-
-  const img = document.createElement("img");
-  img.src = item.querySelector("img").src;
-  img.className = "tray-item";
-
-  traySlot.innerHTML = "";
-  traySlot.appendChild(img);
+function dispense(item){
+  display.innerText="DISPENSING...";
 
   setTimeout(()=>{
-    display.innerText = "INSERT COIN";
-    credits--;
+    tray.innerText="🎉 "+item.dataset.name;
+    display.innerText="INSERT COIN";
+    hasCoin=false;
   },1000);
 }
 </script>
