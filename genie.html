@@ -10,36 +10,54 @@
 body {
   margin: 0;
   font-family: 'Cinzel', serif;
+  background: #2b0a3d;
   color: white;
   overflow: hidden;
-
-  background: radial-gradient(circle at top, #9d4edd, #3c096c 60%, #240046);
 }
 
-/* ✨ STARS */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image: radial-gradient(white 1px, transparent 1px);
-  background-size: 40px 40px;
-  opacity: 0.2;
-  pointer-events: none;
-}
-
-/* MAIN */
+/* CONTAINER */
 .container {
   width: 900px;
   margin: 40px auto;
-  text-align: center;
   position: relative;
+  text-align: center;
+}
+
+/* IMAGE */
+.ui-image {
+  width: 100%;
+  display: block;
+  border-radius: 20px;
+}
+
+/* HOTSPOTS */
+.hotspot {
+  position: absolute;
+  cursor: pointer;
+  border-radius: 20px;
+  background: rgba(255,215,0,0.08);
+  transition: 0.3s;
+}
+
+.spices { top: 140px; left: 110px; width: 200px; height: 230px; }
+.jewels { top: 140px; left: 350px; width: 200px; height: 230px; }
+.fabrics { top: 140px; left: 600px; width: 200px; height: 230px; }
+
+.hotspot:hover {
+  background: rgba(255,215,0,0.15);
+  box-shadow: 0 0 25px gold;
+}
+
+.hotspot.active {
+  background: rgba(255,215,0,0.2);
+  box-shadow: 0 0 40px gold;
 }
 
 /* 🪔 LAMP */
 .lamp {
-  font-size: 50px;
+  font-size: 48px;
+  margin-top: 20px;
   cursor: pointer;
-  margin-bottom: 20px;
   transition: 0.3s;
 }
 
@@ -60,12 +78,13 @@ body::after {
 /* 🧞 GENIE */
 .genie {
   position: absolute;
-  top: 0;
+  top: -60px;
   left: 50%;
   transform: translateX(-50%) scale(0);
   width: 100px;
   transition: 0.4s;
   filter: drop-shadow(0 0 20px #c77dff);
+  z-index: 3;
 }
 
 .genie.show {
@@ -74,63 +93,31 @@ body::after {
 
 /* 📜 SCROLL */
 .scroll {
-  margin-top: 20px;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%) scaleY(0);
+
+  width: 320px;
+  padding: 20px;
+
   background: #f5deb3;
   color: #3b2a1a;
-  padding: 20px;
-  border-radius: 12px;
-  width: 300px;
-  margin-left: auto;
-  margin-right: auto;
-  transform: scaleY(0);
+
+  border-radius: 10px;
   transform-origin: top;
   transition: 0.4s;
+  z-index: 2;
+  text-align: center;
 }
 
 .scroll.show {
-  transform: scaleY(1);
-}
-
-/* 🏺 STALLS */
-.stalls {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 40px;
-}
-
-.stall {
-  width: 150px;
-  padding: 20px;
-  border-radius: 20px;
-  border: 1px solid gold;
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(10px);
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.stall:hover {
-  transform: translateY(-10px) scale(1.05);
-  box-shadow: 0 0 20px gold;
-}
-
-.stall.active {
-  box-shadow: 0 0 30px gold;
-}
-
-/* BUTTON */
-.wish-btn {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background: gold;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
+  transform: translateX(-50%) scaleY(1);
 }
 
 /* NAV */
 nav {
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 nav span {
@@ -145,24 +132,6 @@ nav span.active {
   background: gold;
   color: black;
 }
-
-/* ✨ SPARK TRAIL */
-.spark {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: gold;
-  border-radius: 50%;
-  pointer-events: none;
-  animation: fade 0.6s forwards;
-}
-
-@keyframes fade {
-  to {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
 </style>
 </head>
 
@@ -170,25 +139,22 @@ nav span.active {
 
 <div class="container">
 
-<!-- 🪔 LAMP -->
-<div class="lamp" id="lamp">🪔</div>
-
-<!-- 🧞 GENIE -->
 <img src="genie.png" class="genie" id="genie">
 
-<!-- 📜 SCROLL -->
 <div class="scroll" id="scroll"></div>
 
-<!-- 🏺 STALLS -->
-<div class="stalls">
-  <div class="stall" data-item="SPICES">🏺 SPICES</div>
-  <div class="stall" data-item="JEWELS">💎 JEWELS</div>
-  <div class="stall" data-item="FABRICS">🧵 FABRICS</div>
-</div>
+<!-- BAZAAR IMAGE -->
+<img src="bazaar.png" class="ui-image">
 
-<button class="wish-btn" id="wishBtn">✨ Grant Wish</button>
+<!-- HOTSPOTS -->
+<div class="hotspot spices" data-item="SPICES"></div>
+<div class="hotspot jewels" data-item="JEWELS"></div>
+<div class="hotspot fabrics" data-item="FABRICS"></div>
 
-<!-- 🌍 NAV -->
+<!-- 🪔 LAMP (TRIGGER) -->
+<div class="lamp" id="lamp">🪔</div>
+
+<!-- NAV -->
 <nav>
   <span class="active" data-region="Asia">Asia</span>
   <span data-region="Africa">Africa</span>
@@ -199,10 +165,10 @@ nav span.active {
 </div>
 
 <script>
-const lamp = document.getElementById("lamp");
-const genie = document.getElementById("genie");
+const hotspots = document.querySelectorAll(".hotspot");
 const scroll = document.getElementById("scroll");
-const stalls = document.querySelectorAll(".stall");
+const genie = document.getElementById("genie");
+const lamp = document.getElementById("lamp");
 const navItems = document.querySelectorAll("nav span");
 
 let selected = "";
@@ -211,84 +177,81 @@ let currentRegion = "Asia";
 /* DATA */
 const data = {
   Asia: {
-    SPICES: "Saffron, Cardamom, Turmeric",
-    JEWELS: "Jade, Ruby, Pearl",
-    FABRICS: "Silk, Banarasi"
+    SPICES: { items: "Saffron, Cardamom, Turmeric", bazaar: "Grand Bazaar Istanbul" },
+    JEWELS: { items: "Jade, Ruby, Pearl", bazaar: "Jaipur Gem Market" },
+    FABRICS: { items: "Silk, Banarasi", bazaar: "Varanasi Textile Bazaar" }
   },
   Africa: {
-    SPICES: "Berbere, Cloves",
-    JEWELS: "Gold, Amber",
-    FABRICS: "Kente, Mudcloth"
+    SPICES: { items: "Berbere, Cloves", bazaar: "Marrakech Souk" },
+    JEWELS: { items: "Gold, Amber", bazaar: "Cairo Bazaar" },
+    FABRICS: { items: "Kente, Mudcloth", bazaar: "Accra Market" }
   },
   Europe: {
-    SPICES: "Rosemary, Thyme",
-    JEWELS: "Emerald, Sapphire",
-    FABRICS: "Velvet, Linen"
+    SPICES: { items: "Rosemary, Thyme", bazaar: "Barcelona Market" },
+    JEWELS: { items: "Emerald, Sapphire", bazaar: "Antwerp District" },
+    FABRICS: { items: "Velvet, Linen", bazaar: "Florence Market" }
   },
   "Middle East": {
-    SPICES: "Za’atar, Sumac",
-    JEWELS: "Opal, Topaz",
-    FABRICS: "Brocade, Silk"
+    SPICES: { items: "Za’atar, Sumac", bazaar: "Dubai Spice Souk" },
+    JEWELS: { items: "Opal, Topaz", bazaar: "Gold Souk Dubai" },
+    FABRICS: { items: "Brocade, Silk", bazaar: "Tehran Bazaar" }
   }
 };
 
-/* STALL SELECT */
-stalls.forEach(s => {
-  s.onclick = () => {
-    stalls.forEach(x => x.classList.remove("active"));
-    s.classList.add("active");
-    selected = s.dataset.item;
-  };
+/* SELECT STALL */
+hotspots.forEach(h => {
+  h.addEventListener("click", () => {
+    hotspots.forEach(x => x.classList.remove("active"));
+    h.classList.add("active");
+    selected = h.dataset.item;
+  });
 });
 
 /* NAV */
-navItems.forEach(n => {
-  n.onclick = () => {
-    navItems.forEach(x => x.classList.remove("active"));
-    n.classList.add("active");
-    currentRegion = n.dataset.region;
-  };
+navItems.forEach(nav => {
+  nav.addEventListener("click", () => {
+    navItems.forEach(n => n.classList.remove("active"));
+    nav.classList.add("active");
+    currentRegion = nav.dataset.region;
+  });
 });
 
-/* 🪔 LAMP INTERACTION */
-lamp.onclick = () => {
+/* 🪔 LAMP FLOW */
+lamp.addEventListener("click", () => {
+
   lamp.classList.add("rub");
 
-  setTimeout(() => {
-    genie.classList.add("show");
-  }, 200);
-};
-
-/* ✨ WISH */
-document.getElementById("wishBtn").onclick = () => {
-
+  /* RESET */
   scroll.classList.remove("show");
+  genie.classList.remove("show");
 
   setTimeout(() => {
 
-    if (!selected) {
-      scroll.innerHTML = "🧞 Select a stall first!";
-    } else {
-      scroll.innerHTML = `
-        🧞 ${selected} from ${currentRegion}<br><br>
-        ✨ ${data[currentRegion][selected]}
-      `;
-    }
+    genie.classList.add("show");
 
+    /* MAGIC DELAY */
+    scroll.innerHTML = "✨ Summoning treasures...";
     scroll.classList.add("show");
 
-  }, 300);
-};
+    setTimeout(() => {
 
-/* ✨ MAGIC TRAIL */
-document.addEventListener("mousemove", e => {
-  const spark = document.createElement("div");
-  spark.className = "spark";
-  spark.style.left = e.pageX + "px";
-  spark.style.top = e.pageY + "px";
-  document.body.appendChild(spark);
+      if (!selected) {
+        scroll.innerHTML = "🧞 Select a stall first!";
+      } else {
 
-  setTimeout(() => spark.remove(), 600);
+        const result = data[currentRegion][selected];
+
+        scroll.innerHTML = `
+          🧞 ${selected} from ${currentRegion}<br><br>
+          📍 ${result.bazaar}<br>
+          ✨ ${result.items}
+        `;
+      }
+
+    }, 600);
+
+  }, 200);
+
 });
 </script>
 
