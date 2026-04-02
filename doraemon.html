@@ -105,6 +105,25 @@ body {
   transform: rotateY(-120deg);
 }
 
+  /* DOOR KNOB */
+  .doraemon-knob {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+
+  background: radial-gradient(circle at 30% 30%, #ffffff, #d0eaff);
+
+  border: 4px solid #1F3A5F;
+
+  box-shadow: 
+    inset 0 4px 10px rgba(0,0,0,0.2),
+    0 6px 10px rgba(0,0,0,0.3);
+
+  cursor: pointer;
+
+  position: relative;
+}
+
 /* COPTER */
 .copter {
   position: absolute;
@@ -182,6 +201,7 @@ body {
 
     <div class="door" id="door"></div>
 
+    <div class="doraemon-knob"></div> 
   </div>
 </div>
 
