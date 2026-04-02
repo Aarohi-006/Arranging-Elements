@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Genie Bazaar Premium UI</title>
+<title>Genie Bazaar UI</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 
@@ -10,87 +10,112 @@
 body {
   margin: 0;
   font-family: 'Cinzel', serif;
-  background: #2b0a3d;
   color: white;
   overflow: hidden;
+
+  background: radial-gradient(circle at top, #9d4edd, #3c096c 60%, #240046);
 }
 
-/* MAIN UI */
+/* ✨ STARS */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(white 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+/* MAIN */
 .container {
   width: 900px;
   margin: 40px auto;
-  position: relative;
   text-align: center;
+  position: relative;
 }
 
-/* YOUR IMAGE */
-.ui-image {
-  width: 100%;
-  border-radius: 20px;
-  display: block;
-}
-
-/* HOTSPOTS */
-.hotspot {
-  position: absolute;
+/* 🪔 LAMP */
+.lamp {
+  font-size: 50px;
   cursor: pointer;
-  border-radius: 20px;
-  transition: 0.2s;
+  margin-bottom: 20px;
+  transition: 0.3s;
 }
 
-/* POSITIONED OVER YOUR DESIGN */
-.spices { top: 140px; left: 110px; width: 200px; height: 230px; }
-.jewels { top: 140px; left: 350px; width: 200px; height: 230px; }
-.fabrics { top: 140px; left: 600px; width: 200px; height: 230px; }
-
-/* HOVER */
-.hotspot:hover {
-  outline: 3px solid gold;
-  box-shadow: 0 0 20px gold;
+.lamp:hover {
+  transform: scale(1.2);
 }
 
-/* ACTIVE */
-.hotspot.active {
-  outline: 4px solid gold;
-  box-shadow: 0 0 30px gold;
+.lamp.rub {
+  animation: rub 0.5s;
 }
 
-/* SCROLL */
-.scroll {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%) scaleY(0);
-
-  width: 320px;
-  padding: 20px;
-
-  background: #f5deb3;
-  color: #3b2a1a;
-
-  border-radius: 10px;
-  transform-origin: top;
-  transition: 0.4s;
-  z-index: 2;
+@keyframes rub {
+  0% { transform: rotate(0); }
+  50% { transform: rotate(-15deg); }
+  100% { transform: rotate(0); }
 }
 
-.scroll.show {
-  transform: translateX(-50%) scaleY(1);
-}
-
-/* GENIE */
+/* 🧞 GENIE */
 .genie {
   position: absolute;
-  top: -80px;
+  top: 0;
   left: 50%;
   transform: translateX(-50%) scale(0);
-  width: 90px;
+  width: 100px;
   transition: 0.4s;
-  z-index: 3;
+  filter: drop-shadow(0 0 20px #c77dff);
 }
 
 .genie.show {
   transform: translateX(-50%) scale(1);
+}
+
+/* 📜 SCROLL */
+.scroll {
+  margin-top: 20px;
+  background: #f5deb3;
+  color: #3b2a1a;
+  padding: 20px;
+  border-radius: 12px;
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: 0.4s;
+}
+
+.scroll.show {
+  transform: scaleY(1);
+}
+
+/* 🏺 STALLS */
+.stalls {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 40px;
+}
+
+.stall {
+  width: 150px;
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid gold;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.stall:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 0 20px gold;
+}
+
+.stall.active {
+  box-shadow: 0 0 30px gold;
 }
 
 /* BUTTON */
@@ -101,7 +126,6 @@ body {
   border: none;
   border-radius: 20px;
   cursor: pointer;
-  font-family: 'Cinzel';
 }
 
 /* NAV */
@@ -120,7 +144,24 @@ nav span {
 nav span.active {
   background: gold;
   color: black;
-  box-shadow: 0 0 10px gold;
+}
+
+/* ✨ SPARK TRAIL */
+.spark {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: gold;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: fade 0.6s forwards;
+}
+
+@keyframes fade {
+  to {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
 </style>
 </head>
@@ -129,20 +170,25 @@ nav span.active {
 
 <div class="container">
 
+<!-- 🪔 LAMP -->
+<div class="lamp" id="lamp">🪔</div>
+
+<!-- 🧞 GENIE -->
 <img src="genie.png" class="genie" id="genie">
 
+<!-- 📜 SCROLL -->
 <div class="scroll" id="scroll"></div>
 
-<!-- YOUR UI IMAGE -->
-<img src="bazaar.png" class="ui-image">
-
-<!-- HOTSPOTS -->
-<div class="hotspot spices" data-item="SPICES"></div>
-<div class="hotspot jewels" data-item="JEWELS"></div>
-<div class="hotspot fabrics" data-item="FABRICS"></div>
+<!-- 🏺 STALLS -->
+<div class="stalls">
+  <div class="stall" data-item="SPICES">🏺 SPICES</div>
+  <div class="stall" data-item="JEWELS">💎 JEWELS</div>
+  <div class="stall" data-item="FABRICS">🧵 FABRICS</div>
+</div>
 
 <button class="wish-btn" id="wishBtn">✨ Grant Wish</button>
 
+<!-- 🌍 NAV -->
 <nav>
   <span class="active" data-region="Asia">Asia</span>
   <span data-region="Africa">Africa</span>
@@ -153,10 +199,10 @@ nav span.active {
 </div>
 
 <script>
-const hotspots = document.querySelectorAll(".hotspot");
-const scroll = document.getElementById("scroll");
+const lamp = document.getElementById("lamp");
 const genie = document.getElementById("genie");
-const btn = document.getElementById("wishBtn");
+const scroll = document.getElementById("scroll");
+const stalls = document.querySelectorAll(".stall");
 const navItems = document.querySelectorAll("nav span");
 
 let selected = "";
@@ -165,62 +211,84 @@ let currentRegion = "Asia";
 /* DATA */
 const data = {
   Asia: {
-    SPICES: { items: "Saffron, Cardamom, Turmeric", bazaar: "Grand Bazaar Istanbul" },
-    JEWELS: { items: "Jade, Ruby, Pearl", bazaar: "Jaipur Gem Market" },
-    FABRICS: { items: "Silk, Banarasi", bazaar: "Varanasi Textile Bazaar" }
+    SPICES: "Saffron, Cardamom, Turmeric",
+    JEWELS: "Jade, Ruby, Pearl",
+    FABRICS: "Silk, Banarasi"
   },
   Africa: {
-    SPICES: { items: "Berbere, Cloves", bazaar: "Marrakech Souk" },
-    JEWELS: { items: "Gold, Amber", bazaar: "Cairo Bazaar" },
-    FABRICS: { items: "Kente, Mudcloth", bazaar: "Accra Market" }
+    SPICES: "Berbere, Cloves",
+    JEWELS: "Gold, Amber",
+    FABRICS: "Kente, Mudcloth"
   },
   Europe: {
-    SPICES: { items: "Rosemary, Thyme", bazaar: "Barcelona Market" },
-    JEWELS: { items: "Emerald, Sapphire", bazaar: "Antwerp District" },
-    FABRICS: { items: "Velvet, Linen", bazaar: "Florence Market" }
+    SPICES: "Rosemary, Thyme",
+    JEWELS: "Emerald, Sapphire",
+    FABRICS: "Velvet, Linen"
   },
   "Middle East": {
-    SPICES: { items: "Za’atar, Sumac", bazaar: "Dubai Spice Souk" },
-    JEWELS: { items: "Opal, Topaz", bazaar: "Gold Souk Dubai" },
-    FABRICS: { items: "Brocade, Silk", bazaar: "Tehran Bazaar" }
+    SPICES: "Za’atar, Sumac",
+    JEWELS: "Opal, Topaz",
+    FABRICS: "Brocade, Silk"
   }
 };
 
-/* SELECT STALL */
-hotspots.forEach(h => {
-  h.addEventListener("click", () => {
-    hotspots.forEach(x => x.classList.remove("active"));
-    h.classList.add("active");
-    selected = h.dataset.item;
-  });
+/* STALL SELECT */
+stalls.forEach(s => {
+  s.onclick = () => {
+    stalls.forEach(x => x.classList.remove("active"));
+    s.classList.add("active");
+    selected = s.dataset.item;
+  };
 });
 
 /* NAV */
-navItems.forEach(nav => {
-  nav.addEventListener("click", () => {
-    navItems.forEach(n => n.classList.remove("active"));
-    nav.classList.add("active");
-    currentRegion = nav.dataset.region;
-  });
+navItems.forEach(n => {
+  n.onclick = () => {
+    navItems.forEach(x => x.classList.remove("active"));
+    n.classList.add("active");
+    currentRegion = n.dataset.region;
+  };
 });
 
-/* BUTTON */
-btn.addEventListener("click", () => {
+/* 🪔 LAMP INTERACTION */
+lamp.onclick = () => {
+  lamp.classList.add("rub");
 
-  if (!selected) {
-    scroll.innerHTML = "🧞 Select a stall first!";
-  } else {
-    const result = data[currentRegion][selected];
+  setTimeout(() => {
+    genie.classList.add("show");
+  }, 200);
+};
 
-    scroll.innerHTML = `
-      🧞 ${selected} from ${currentRegion}<br><br>
-      📍 ${result.bazaar}<br>
-      ✨ ${result.items}
-    `;
-  }
+/* ✨ WISH */
+document.getElementById("wishBtn").onclick = () => {
 
-  scroll.classList.add("show");
-  genie.classList.add("show");
+  scroll.classList.remove("show");
+
+  setTimeout(() => {
+
+    if (!selected) {
+      scroll.innerHTML = "🧞 Select a stall first!";
+    } else {
+      scroll.innerHTML = `
+        🧞 ${selected} from ${currentRegion}<br><br>
+        ✨ ${data[currentRegion][selected]}
+      `;
+    }
+
+    scroll.classList.add("show");
+
+  }, 300);
+};
+
+/* ✨ MAGIC TRAIL */
+document.addEventListener("mousemove", e => {
+  const spark = document.createElement("div");
+  spark.className = "spark";
+  spark.style.left = e.pageX + "px";
+  spark.style.top = e.pageY + "px";
+  document.body.appendChild(spark);
+
+  setTimeout(() => spark.remove(), 600);
 });
 </script>
 
