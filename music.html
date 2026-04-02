@@ -218,23 +218,43 @@ const needle = document.getElementById("needle");
 const nowPlaying = document.getElementById("nowPlaying");
 const listPanel = document.getElementById("listPanel");
 
-/* DATA */
-const categories = [
-  "🔵 POP ALBUM",
-  "🟣 ROCK ALBUM",
-  "🟡 DISCO",
-  "🟢 INDIE",
-  "🔴 HIP HOP"
-];
+/* 🎵 DATA STRUCTURE */
+const musicData = {
+  POP: {
+    album: "Future Nostalgia",
+    artist: "Dua Lipa",
+    songs: ["Levitating", "Don't Start Now", "Physical"]
+  },
+  ROCK: {
+    album: "Back in Black",
+    artist: "AC/DC",
+    songs: ["Hells Bells", "Shoot to Thrill", "Back in Black"]
+  },
+  DISCO: {
+    album: "Saturday Night Fever",
+    artist: "Bee Gees",
+    songs: ["Stayin Alive", "Night Fever", "More Than a Woman"]
+  },
+  INDIE: {
+    album: "AM",
+    artist: "Arctic Monkeys",
+    songs: ["Do I Wanna Know?", "R U Mine?", "Why'd You Only Call Me"]
+  },
+  HIPHOP: {
+    album: "DAMN.",
+    artist: "Kendrick Lamar",
+    songs: ["HUMBLE.", "DNA.", "LOYALTY."]
+  }
+};
 
-/* PLAY TRACK */
+/* 🎧 PLAY TRACK */
 function playTrack(name) {
   nowPlaying.innerText = "Now Playing: " + name;
   vinyl.classList.add("spin");
   needle.classList.add("drop");
 }
 
-/* BUTTONS */
+/* 🎛 PLAY / PAUSE */
 function play() {
   vinyl.classList.add("spin");
   needle.classList.add("drop");
@@ -245,7 +265,7 @@ function pause() {
   needle.classList.remove("drop");
 }
 
-/* NAV INTERACTION */
+/* 🎚 NAV */
 document.querySelectorAll("nav span").forEach(tab => {
   tab.addEventListener("click", () => {
 
@@ -254,35 +274,79 @@ document.querySelectorAll("nav span").forEach(tab => {
 
     const type = tab.innerText;
 
+    /* SONGS VIEW */
     if (type === "SONGS") {
-      listPanel.innerHTML = categories.map(c => 
-        `<div onclick="playTrack('${c}')">${c}</div>`
+      listPanel.innerHTML = Object.keys(musicData).map(key => {
+        return musicData[key].songs.map(song =>
+          `<div onclick="playTrack('${song}')">🎵 ${song}</div>`
+        ).join("");
+      }).join("");
+    }
+
+    /* ARTISTS VIEW */
+    if (type === "ARTISTS") {
+      listPanel.innerHTML = Object.keys(musicData).map(key =>
+        `<div onclick="playTrack('${musicData[key].artist}')">🎤 ${musicData[key].artist}</div>`
       ).join("");
     }
 
-    if (type === "ARTISTS") {
-      listPanel.innerHTML = `
-        <div onclick="playTrack('Michael Jackson')">Michael Jackson</div>
-        <div onclick="playTrack('Madonna')">Madonna</div>
-        <div onclick="playTrack('Queen')">Queen</div>
-      `;
-    }
-
+    /* ALBUMS VIEW */
     if (type === "ALBUMS") {
-      listPanel.innerHTML = `
-        <div onclick="playTrack('Thriller')">Thriller</div>
-        <div onclick="playTrack('Like a Virgin')">Like a Virgin</div>
-        <div onclick="playTrack('Back in Black')">Back in Black</div>
-      `;
+      listPanel.innerHTML = Object.keys(musicData).map(key =>
+        `<div onclick="showAlbum('${key}')">💿 ${musicData[key].album}</div>`
+      ).join("");
     }
 
   });
 });
 
-/* SEARCH */
+/* 📀 SHOW ALBUM TRACKLIST */
+function showAlbum(category) {
+  const data = musicData[category];
+
+  listPanel.innerHTML = `
+    <strong>💿 ${data.album}</strong><br>
+    <em>by ${data.artist}</em><br><br>
+    ${data.songs.map(song =>
+      `<div onclick="playTrack('${song}')">🎵 ${song}</div>`
+    ).join("")}
+  `;
+}
+
+/* 🎵 VINYL DOTS */
+function playTrackCategory(category) {
+  const data = musicData[category];
+
+  nowPlaying.innerText = "Now Playing: " + data.album;
+  vinyl.classList.add("spin");
+  needle.classList.add("drop");
+
+  showAlbum(category);
+}
+
+/* 🔁 CONNECT DOTS (IMPORTANT) */
+document.querySelectorAll(".dot")[0].onclick = () => playTrackCategory("HIPHOP");
+document.querySelectorAll(".dot")[1].onclick = () => playTrackCategory("DISCO");
+document.querySelectorAll(".dot")[2].onclick = () => playTrackCategory("POP");
+
+/* 🔍 SEARCH */
 document.getElementById("search").addEventListener("keydown", (e)=>{
   if(e.key === "Enter"){
-    listPanel.innerHTML = "Searching: " + e.target.value;
+    const val = e.target.value.toLowerCase();
+
+    let results = [];
+
+    Object.values(musicData).forEach(cat=>{
+      cat.songs.forEach(song=>{
+        if(song.toLowerCase().includes(val)){
+          results.push(song);
+        }
+      });
+    });
+
+    listPanel.innerHTML = results.length
+      ? results.map(r => `<div onclick="playTrack('${r}')">${r}</div>`).join("")
+      : "No results found 🎧";
   }
 });
 </script>
