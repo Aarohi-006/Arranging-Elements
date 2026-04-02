@@ -25,13 +25,20 @@ body {
   box-shadow: 0 0 40px #ff00cc;
 }
 
-/* SCREEN */
+/* CRT DISPLAY */
 .display {
-  background: #000;
-  color: lime;
+  background: radial-gradient(#000, #020202);
+  color: #00ff99;
   padding: 15px;
   border-radius: 12px;
   text-align: center;
+  border: 3px solid #00ffcc;
+  box-shadow: inset 0 0 20px #00ffcc;
+  animation: flicker 1.5s infinite;
+}
+@keyframes flicker {
+  0%,100% { opacity:1; }
+  50% { opacity:0.85; }
 }
 
 /* GRID */
@@ -40,6 +47,7 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
   margin-top: 15px;
+  position: relative;
 }
 
 .item {
@@ -56,9 +64,21 @@ body {
   object-fit: contain;
 }
 
+/* ACTIVE GLOW */
 .item.active {
-  outline: 4px solid red;
+  box-shadow: 0 0 20px red, 0 0 40px yellow;
   transform: scale(1.05);
+}
+
+/* DROP ANIMATION */
+.fall {
+  position: absolute;
+  width: 80px;
+  animation: drop 1s ease forwards;
+}
+@keyframes drop {
+  0% { top:0; opacity:1; }
+  100% { top:250px; opacity:0; }
 }
 
 /* KEYPAD */
@@ -71,10 +91,11 @@ body {
 
 .keypad button {
   padding: 12px;
-  background: #444;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ff3c3c, #800000);
   color: white;
   border: none;
-  border-radius: 6px;
+  box-shadow: 0 4px #300, 0 0 10px red;
   cursor: pointer;
 }
 
@@ -85,16 +106,6 @@ body {
   padding: 12px;
   border-radius: 10px;
   text-align: center;
-}
-
-/* COIN */
-.coin-btn {
-  margin: 10px 0;
-  padding: 10px;
-  background: gold;
-  border-radius: 20px;
-  border: none;
-  cursor: pointer;
 }
 
 /* SIDE PANEL */
@@ -124,72 +135,15 @@ body {
   text-align: center;
 }
 
-/* LIGHTS */
-.lights {
-  display: flex;
-  gap: 8px;
-}
-
-.lights span {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.green { background: lime; }
-.red { background: red; }
-
-/* SLOT */
-.coin-slot {
-  width: 20px;
-  height: 40px;
-  background: black;
-}
-
-/* COIN */
-.coin {
-  width: 25px;
-  height: 25px;
-  background: gold;
-  border-radius: 50%;
-}
-
-/* KEYPAD PANEL */
-.keypad-panel {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
-}
-
-.keypad-panel div {
-  width: 20px;
-  height: 20px;
-  background: #999;
-}
-
-/* KNOB */
-.knob {
+/* COIN BUTTON */
+.coin-btn {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: radial-gradient(circle, #ddd, #888);
-}
-
-/* ARROW */
-.arrow {
-  width: 0;
-  height: 0;
-  border-left: 15px solid transparent;
-  border-right: 15px solid transparent;
-  border-top: 25px solid red;
-}
-
-/* TRAY SLOT */
-.tray-slot {
-  width: 60px;
-  height: 40px;
-  background: #333;
-  border-radius: 8px;
+  background: radial-gradient(circle, gold, orange);
+  box-shadow: 0 0 10px gold;
+  border: none;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -198,8 +152,7 @@ body {
 
 <div class="machine">
 
-<div class="display" id="display">INSERT COIN</div>
-<button class="coin-btn" onclick="insertCoin()">🪙 Insert Coin</button>
+<div class="display" id="display">PRESS START</div>
 
 <section class="grid" id="grid">
 
@@ -225,17 +178,11 @@ body {
 <!-- SIDE PANEL -->
 <div class="side-panel">
   <div class="panel-led" id="panelLED">A1</div>
-  <div class="lights"><span class="green"></span><span class="red"></span></div>
-  <div class="coin-slot"></div>
-  <div class="coin"></div>
-  <div class="keypad-panel">
-    <div></div><div></div><div></div>
-    <div></div><div></div><div></div>
-    <div></div><div></div><div></div>
-  </div>
-  <div class="knob"></div>
-  <div class="arrow"></div>
-  <div class="tray-slot"></div>
+
+  <!-- COIN HERE -->
+  <button class="coin-btn" onclick="insertCoin()">🪙</button>
+  <div style="font-size:10px;">INSERT</div>
+
 </div>
 
 </div>
@@ -245,19 +192,20 @@ const items = document.querySelectorAll(".item");
 const display = document.getElementById("display");
 const tray = document.getElementById("tray");
 const panelLED = document.getElementById("panelLED");
+const grid = document.getElementById("grid");
 
 let index = 0;
-let hasCoin = false;
+let credits = 0;
 let inputCode = "";
 const cols = 3;
 
-/* FOCUS FIX */
+/* INIT */
 window.onload = () => document.body.focus();
-document.body.addEventListener("click", () => document.body.focus());
 
+/* INSERT COIN */
 function insertCoin() {
-  hasCoin = true;
-  display.innerText = "SELECT ITEM";
+  credits++;
+  display.innerText = "CREDITS: " + credits;
 }
 
 /* UPDATE */
@@ -265,7 +213,6 @@ function updateSelection() {
   items.forEach(i => i.classList.remove("active"));
   const item = items[index];
   item.classList.add("active");
-
   panelLED.innerText = item.dataset.code;
 }
 updateSelection();
@@ -273,7 +220,7 @@ updateSelection();
 /* JOYSTICK */
 document.addEventListener("keydown", (e) => {
 
-  if (!hasCoin) return;
+  if (credits <= 0) return;
 
   let row = Math.floor(index / cols);
   let col = index % cols;
@@ -297,7 +244,7 @@ document.addEventListener("keydown", (e) => {
 
 /* KEYPAD */
 function pressKey(key) {
-  if (!hasCoin) return;
+  if (credits <= 0) return;
 
   inputCode += key;
   panelLED.innerText = inputCode;
@@ -314,12 +261,21 @@ function pressKey(key) {
 
 /* DISPENSE */
 function dispense(item) {
-  display.innerText = "DISPENSING...";
+  display.innerText = ">> DISPENSING <<";
+
+  const img = item.querySelector("img").src;
+
+  const fall = document.createElement("img");
+  fall.src = img;
+  fall.className = "fall";
+
+  grid.appendChild(fall);
 
   setTimeout(() => {
-    tray.innerText = "🎉 " + item.dataset.name;
+    tray.innerText = "🏆 YOU WON: " + item.dataset.name;
     display.innerText = "INSERT COIN";
-    hasCoin = false;
+    credits--;
+    fall.remove();
   }, 1000);
 }
 </script>
