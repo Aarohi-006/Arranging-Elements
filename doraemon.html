@@ -11,9 +11,43 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(#2D9CDB, #BEE9FF);
   font-family: sans-serif;
   text-align: center;
+
+  background: url("doraemon-bg.jpg") repeat;
+  background-size: 300px;
+
+  cursor: none;
+}
+
+/* OVERLAY */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(45,156,219,0.25);
+  pointer-events: none;
+}
+
+/* CURSOR */
+.cursor {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle, white 60%, #2D9CDB);
+  position: fixed;
+  pointer-events: none;
+  z-index: 100;
+  transform: translate(-50%, -50%);
+}
+
+/* GLASS UI */
+.ui-container {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(12px);
+  padding: 30px;
+  border-radius: 25px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
 }
 
 /* HEADER */
@@ -21,7 +55,7 @@ body {
   width: 120px;
 }
 
-/* WRAPPER */
+/* DOOR */
 .door-wrapper {
   perspective: 1200px;
   position: relative;
@@ -33,22 +67,19 @@ body {
   position: relative;
 }
 
-/* 🌍 INSIDE (BEHIND DOOR) */
+/* INSIDE */
 .inside {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, #ffffff, #87CEFA);
+  background: radial-gradient(circle, #fff, #87CEFA);
   border-radius: 20px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   opacity: 0;
-  transition: opacity 0.5s;
-
-  z-index: 1; /* 👈 FIX */
+  transition: 0.5s;
+  z-index: 1;
 }
 
 .inside.show {
@@ -74,7 +105,7 @@ body {
   border-radius: 8px;
 }
 
-/* 🚪 DOOR */
+/* DOOR */
 .door {
   position: absolute;
   width: 100%;
@@ -82,54 +113,75 @@ body {
   background: #FF7BA9;
   border-radius: 20px;
   border: 5px solid #1F3A5F;
-
   transform-origin: left;
-  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-
-  z-index: 5; /* 👈 FIX */
+  transition: 0.8s cubic-bezier(0.65,0,0.35,1);
+  z-index: 5;
 }
 
-/* OPEN */
-.door.open {
-  transform: rotateY(-120deg);
-}
+.door.open { transform: rotateY(-120deg); }
+.door.close { transform: rotateY(0deg); }
 
-/* CLOSE */
-.door.close {
-  transform: rotateY(0deg);
-}
-
-/* 🔘 KNOB */
+/* KNOB */
 .knob {
   width: 18px;
   height: 18px;
   background: #1F3A5F;
   border-radius: 50%;
-
   position: absolute;
   right: 15px;
   top: 50%;
   transform: translateY(-50%);
+  z-index: 6;
+}
 
-  z-index: 6; /* 👈 ABOVE DOOR */
+/* 🚁 COPTER */
+.copter {
+  position: absolute;
+  width: 60px;
+  bottom: 10%;
+  left: 10%;
+  transition: all 1s ease;
+  z-index: 10;
+}
+
+.copter.fly {
+  left: 50%;
+  bottom: 50%;
+  transform: scale(0.3);
+  opacity: 0;
 }
 
 /* NAV */
 .nav {
   margin-top: 30px;
   display: flex;
-  gap: 30px;
+  justify-content: center;
+  gap: 40px;
 }
 
 .icon {
-  font-size: 20px;
   cursor: pointer;
-  animation: float 3s ease-in-out infinite;
 }
 
-@keyframes float {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+/* POCKET */
+.pocket {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 90px;
+}
+
+.pocket img {
+  width: 100%;
+}
+
+/* POCKET ITEM */
+.pocket-item {
+  position: fixed;
+  width: 50px;
+  border-radius: 10px;
+  transition: 1s ease;
+  z-index: 50;
 }
 
 /* DETAIL */
@@ -137,21 +189,14 @@ body {
   width: 120px;
   border-radius: 10px;
 }
-
-.detail button {
-  margin-top: 10px;
-  padding: 8px 12px;
-  border-radius: 20px;
-  border: none;
-  background: #FFD84D;
-  cursor: pointer;
-}
 </style>
 </head>
 
 <body>
 
-<div>
+<div class="cursor" id="cursor"></div>
+
+<div class="ui-container">
 
 <div class="header">
   <img src="doraemon.gif">
@@ -168,6 +213,9 @@ body {
       <div class="knob"></div>
     </div>
 
+    <!-- 🚁 COPTER -->
+    <img src="copter.png" class="copter" id="copter">
+
   </div>
 </div>
 
@@ -179,29 +227,43 @@ body {
 
 </div>
 
+<!-- 🧳 POCKET -->
+<div class="pocket">
+  <img src="pocket.png">
+</div>
+
 <script>
 const door = document.getElementById("door");
 const inside = document.getElementById("inside");
+const cursor = document.getElementById("cursor");
+const copter = document.getElementById("copter");
+
+/* CURSOR */
+document.addEventListener("mousemove", e => {
+  cursor.style.left = e.clientX + "px";
+  cursor.style.top = e.clientY + "px";
+});
 
 /* DATA */
 const data = {
   Beach: [
     {name:"Bali", img:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400"},
-    {name:"Maldives", img:"https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400"},
-       {name:"Santorini", img: "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=400&auto=format&fit=crop"
+    {name:"Maldives", img:"https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=400"},
+    {name:"Santorini", img: "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=400&auto=format&fit=crop"
     }
-      ],
+ ],
   City: [
     {name:"NYC", img:"nyc.jpeg"},
     {name:"Tokyo", img:"https://images.unsplash.com/photo-1549692520-acc6669e2f0c?w=400"},
-     {name:"Paris", img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&auto=format&fit=crop"
-    },
-  ],
-  Mountains: [
+    {name:"Paris", img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&auto=format&fit=crop"
+    }
+    ],
+    Mountains: [
     {name:"Swiss Alps", img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400&auto=format&fit=crop"},
     {name: "Rocky Mountains", img: "https://images.unsplash.com/photo-1500534623283-312aade485b7?w=400&auto=format&fit=crop"},
     {name:"Himalayas", img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=400"}
   ]
+ 
 };
 
 /* CLICK */
@@ -225,21 +287,24 @@ document.querySelectorAll(".icon").forEach(icon => {
     `;
 
     /* RESET */
-    door.classList.remove("close");
-    door.classList.remove("open");
+    door.classList.remove("open","close");
     inside.classList.remove("show");
+    copter.classList.remove("fly");
 
-    /* OPEN */
-    setTimeout(() => door.classList.add("open"), 300);
-    setTimeout(() => inside.classList.add("show"), 700);
+    /* 🚁 COPTER FIRST */
+    setTimeout(()=>copter.classList.add("fly"),100);
 
-    /* AUTO CLOSE */
-    setTimeout(() => {
+    /* DOOR */
+    setTimeout(()=>door.classList.add("open"),600);
+    setTimeout(()=>inside.classList.add("show"),1000);
+
+    /* CLOSE */
+    setTimeout(()=>{
       inside.classList.remove("show");
       door.classList.remove("open");
       door.classList.add("close");
-    }, 3500);
-
+      copter.classList.remove("fly");
+    },4000);
   });
 });
 
@@ -250,9 +315,31 @@ function expandPlace(name, img) {
       <h2>${name}</h2>
       <img src="${img}">
       <br>
+      <button onclick="addToPocket('${img}')">🧳 Add to Pocket</button>
+      <br>
       <button onclick="location.reload()">⬅ Back</button>
     </div>
   `;
+}
+
+/* POCKET */
+function addToPocket(img) {
+  const item = document.createElement("img");
+  item.src = img;
+  item.className = "pocket-item";
+
+  item.style.left = "50%";
+  item.style.top = "50%";
+
+  document.body.appendChild(item);
+
+  setTimeout(()=>{
+    item.style.left = "92%";
+    item.style.top = "88%";
+    item.style.transform = "scale(0.2)";
+  },50);
+
+  setTimeout(()=>item.remove(),1000);
 }
 </script>
 
