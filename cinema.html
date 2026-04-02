@@ -24,7 +24,31 @@ body {
   width: 80%;
   font-size: 32px;
   margin: 20px 0;
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Bebas Neue';
+}
+
+/* CLAPPER */
+.clapper {
+  width: 320px;
+  perspective: 600px;
+}
+.flap {
+  height: 40px;
+  background: black;
+  transform-origin: top;
+  transition: 0.4s;
+}
+.clap { transform: rotateX(-60deg); }
+
+.clapper-body {
+  background: #eee;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.clapper input, .clapper select {
+  width: 90%;
+  margin: 5px 0;
 }
 
 /* 🎞 ROW */
@@ -33,53 +57,54 @@ body {
   margin: 20px 0;
 }
 
-/* TITLE */
 .row-title {
   font-family: 'Bebas Neue';
   font-size: 24px;
-  margin-bottom: 10px;
   border-bottom: 2px solid gold;
 }
 
-/* 👇 THIS FIXES SCROLL */
+/* SCROLL FIX */
 .viewport {
   overflow: hidden;
-  width: 100%;
 }
 
-/* STRIP */
 .strip {
   display: flex;
   gap: 20px;
   width: max-content;
-  animation: scroll 20s linear infinite;
+  animation: scroll 25s linear infinite;
 }
 
 .strip:hover {
   animation-play-state: paused;
 }
 
-/* FIXED ANIMATION */
 @keyframes scroll {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
 
-/* MOVIE */
+/* CARD */
 .frame {
+  flex-shrink: 0;
   background: #c9a66b;
   padding: 8px;
   border-radius: 10px;
   cursor: pointer;
-  flex-shrink: 0; /* IMPORTANT */
 }
 
 .frame img {
   width: 140px;
   height: 200px;
   object-fit: cover;
-  display: block;
 }
+
+.frame small {
+  display: block;
+  font-size: 10px;
+}
+
+.frame:hover { transform: scale(1.1); }
 
 /* TICKET */
 .ticket {
@@ -91,10 +116,26 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: 0.3s;
 }
 
 .ticket-text {
   color: #3b2a1a;
+  text-align: center;
+}
+
+.torn {
+  transform: rotate(-5deg) scale(0.95);
+}
+
+/* GENRES */
+.genres button {
+  margin: 10px;
+  padding: 10px;
+  border-radius: 20px;
+  border: none;
+  background: gold;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -104,6 +145,26 @@ body {
 <div class="header">
   <div>Cinema</div>
   <div>Khoj</div>
+</div>
+
+<!-- CLAPPER -->
+<div class="clapper">
+  <div class="flap" id="flap"></div>
+  <div class="clapper-body">
+    <input id="search" placeholder="🎬 Search movie">
+
+    <select id="yearFilter">
+      <option value="">All Eras</option>
+      <option value="1950s">1950s</option>
+      <option value="1960s">1960s</option>
+      <option value="1970s">1970s</option>
+      <option value="1980s">1980s</option>
+      <option value="1990s">1990s</option>
+      <option value="2000s">2000s</option>
+    </select>
+
+    <input placeholder="Actor / Director">
+  </div>
 </div>
 
 <!-- 🎞 BOLLYWOOD -->
@@ -123,46 +184,100 @@ body {
 </div>
 
 <!-- 🎟 -->
-<div class="ticket">
+<div class="ticket" id="ticketBox">
   <div class="ticket-text" id="ticket">🎟 Select a movie</div>
+</div>
+
+<!-- GENRE -->
+<div class="genres">
+  <button>🍿 Action</button>
+  <button>🍿 Romance</button>
+  <button>🍿 Drama</button>
 </div>
 
 <script>
 
+/* DATA */
 const movies = [
-  {name:"Mother India", industry:"Bollywood", img:"https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400"},
-  {name:"Sholay", industry:"Bollywood", img:"https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=400"},
-  {name:"DDLJ", industry:"Bollywood", img:"https://images.unsplash.com/photo-1518929458119-e5bf444c30f4?w=400"},
-  {name:"Lagaan", industry:"Bollywood", img:"https://images.unsplash.com/photo-1492724441997-5dc865305da7?w=400"},
+  {name:"Mother India", genre:"Drama", era:"1950s", industry:"Bollywood", img:"https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400"},
+  {name:"Sholay", genre:"Action", era:"1970s", industry:"Bollywood", img:"https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=400"},
+  {name:"DDLJ", genre:"Romance", era:"1990s", industry:"Bollywood", img:"https://images.unsplash.com/photo-1518929458119-e5bf444c30f4?w=400"},
+  {name:"Lagaan", genre:"Drama", era:"2000s", industry:"Bollywood", img:"https://images.unsplash.com/photo-1492724441997-5dc865305da7?w=400"},
 
-  {name:"Godfather", industry:"Hollywood", img:"https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400"},
-  {name:"Titanic", industry:"Hollywood", img:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400"},
-  {name:"Dark Knight", industry:"Hollywood", img:"https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=400"},
-  {name:"Psycho", industry:"Hollywood", img:"https://images.unsplash.com/photo-1517602302552-471fe67acf66?w=400"}
+  {name:"Godfather", genre:"Drama", era:"1970s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400"},
+  {name:"Titanic", genre:"Romance", era:"1990s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400"},
+  {name:"Dark Knight", genre:"Action", era:"2000s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=400"},
+  {name:"Psycho", genre:"Drama", era:"1960s", industry:"Hollywood", img:"https://images.unsplash.com/photo-1517602302552-471fe67acf66?w=400"}
 ];
+
+let filteredMovies = [...movies];
 
 const bolly = document.getElementById("bolly");
 const holly = document.getElementById("holly");
 const ticket = document.getElementById("ticket");
+const ticketBox = document.getElementById("ticketBox");
+const flap = document.getElementById("flap");
+const search = document.getElementById("search");
+const yearFilter = document.getElementById("yearFilter");
 
-/* BUILD STRIP */
-function buildStrip(list, container){
-  container.innerHTML = "";
+/* RENDER */
+function render(list){
+  bolly.innerHTML = "";
+  holly.innerHTML = "";
 
   list.forEach(m=>{
-    const div = document.createElement("div");
-    div.className = "frame";
-    div.innerHTML = `<img src="${m.img}">`;
-    div.onclick = ()=> ticket.innerHTML = "🎟 " + m.name;
-    container.appendChild(div);
+    const div=document.createElement("div");
+    div.className="frame";
+    div.innerHTML=`<img src="${m.img}"><small>${m.era}</small>`;
+    div.onclick=()=>selectMovie(m.name);
+
+    if(m.industry==="Bollywood") bolly.appendChild(div);
+    else holly.appendChild(div);
   });
 
-  /* DUPLICATE FOR LOOP */
-  container.innerHTML += container.innerHTML;
+  bolly.innerHTML += bolly.innerHTML;
+  holly.innerHTML += holly.innerHTML;
 }
 
-buildStrip(movies.filter(m=>m.industry==="Bollywood"), bolly);
-buildStrip(movies.filter(m=>m.industry==="Hollywood"), holly);
+render(filteredMovies);
+
+/* SEARCH */
+search.addEventListener("keydown", e=>{
+  if(e.key==="Enter"){
+    flap.classList.add("clap");
+    setTimeout(()=>flap.classList.remove("clap"),300);
+
+    const val = search.value.toLowerCase();
+    filteredMovies = movies.filter(m => m.name.toLowerCase().includes(val));
+    render(filteredMovies);
+  }
+});
+
+/* ERA */
+yearFilter.addEventListener("change", ()=>{
+  const val = yearFilter.value;
+  filteredMovies = val ? movies.filter(m=>m.era===val) : movies;
+  render(filteredMovies);
+});
+
+/* GENRE */
+document.querySelectorAll(".genres button").forEach(btn=>{
+  btn.onclick=()=>{
+    const g = btn.innerText.replace("🍿","").trim();
+    filteredMovies = movies.filter(m=>m.genre===g);
+    render(filteredMovies);
+  };
+});
+
+/* TICKET */
+function selectMovie(name){
+  ticketBox.classList.add("torn");
+
+  setTimeout(()=>{
+    ticket.innerHTML = `🎟 ${name}<br>Now Showing ✨`;
+    ticketBox.classList.remove("torn");
+  },300);
+}
 
 </script>
 
