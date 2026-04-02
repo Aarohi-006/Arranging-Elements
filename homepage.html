@@ -2,116 +2,133 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>UI Worlds</title>
+<title>UI Directions Portal</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;500&display=swap" rel="stylesheet">
 
 <style>
 body {
   margin: 0;
-  font-family: sans-serif;
-  background: black;
-  color: white;
+  height: 100vh;
+
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+
+  font-family: 'Inter', sans-serif;
+  color: white;
+
+  /* 🌌 ABSTRACT BACKGROUND */
+  background: radial-gradient(circle at 20% 20%, #3a0ca3, transparent),
+              radial-gradient(circle at 80% 80%, #ff006e, transparent),
+              #0f0f1a;
 }
 
 /* TITLE */
 h1 {
-  margin: 30px;
-  font-size: 40px;
-  letter-spacing: 3px;
+  font-family: 'Bebas Neue';
+  letter-spacing: 4px;
+  font-size: 48px;
+  margin-bottom: 40px;
 }
 
 /* GRID */
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 250px);
-  gap: 30px;
+  grid-template-columns: repeat(3, 180px);
+  gap: 25px;
 }
 
 /* CARD */
 .card {
-  width: 250px;
-  height: 160px;
+  height: 120px;
   border-radius: 20px;
-  overflow: hidden;
-  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  text-align: center;
+
   cursor: pointer;
   transition: 0.3s;
-}
 
-/* IMAGE */
-.card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* OVERLAY */
-.card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-}
-
-/* TEXT */
-.card span {
-  position: absolute;
-  bottom: 10px;
-  left: 15px;
-  font-size: 20px;
-  z-index: 2;
+  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 /* HOVER */
 .card:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 20px white;
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 0 20px rgba(255,255,255,0.3);
 }
 
-/* DIFFERENT THEMES */
-.cinema { box-shadow: 0 0 15px red; }
-.vending { box-shadow: 0 0 15px cyan; }
-.doraemon { box-shadow: 0 0 15px #2D9CDB; }
-.music { box-shadow: 0 0 15px gold; }
-.genie { box-shadow: 0 0 15px purple; }
+/* EMOJI */
+.card span {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
 
+/* INDIVIDUAL COLORS */
+.doraemon:hover { background: rgba(0,150,255,0.3); }
+.cinema:hover { background: rgba(255,100,0,0.3); }
+.music:hover { background: rgba(255,0,200,0.3); }
+.genie:hover { background: rgba(150,0,255,0.3); }
+.vending:hover { background: rgba(0,255,150,0.3); }
+
+/* FOOTER NOTE */
+.note {
+  margin-top: 30px;
+  font-size: 12px;
+  opacity: 0.6;
+}
 </style>
 </head>
 
 <body>
 
-<h1>✨ UI WORLDS ✨</h1>
+<h1>✨ UI DIRECTIONS ✨</h1>
 
 <div class="grid">
 
-  <a href="cinema.html" class="card cinema">
-    <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba">
-    <span>🎬 Cinema</span>
-  </a>
+  <div class="card doraemon" onclick="go('doraemon.html')">
+    <span>🚪</span>
+    Doraemon Door
+  </div>
 
-  <a href="vending.html" class="card vending">
-    <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c">
-    <span>🎮 Vending Arcade</span>
-  </a>
+  <div class="card cinema" onclick="go('cinema.html')">
+    <span>🎬</span>
+    Cinema Khoj
+  </div>
 
-  <a href="doraemon.html" class="card doraemon">
-    <img src="https://wallpaperaccess.com/full/1848171.jpg">
-    <span>🚪 Doraemon Door</span>
-  </a>
+  <div class="card music" onclick="go('music.html')">
+    <span>🎵</span>
+    Music Machine
+  </div>
 
-  <a href="music.html" class="card music">
-    <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d">
-    <span>🎵 Music Machine</span>
-  </a>
+  <div class="card genie" onclick="go('genie.html')">
+    <span>🧞</span>
+    Genie Bazaar
+  </div>
 
-  <a href="genie.html" class="card genie">
-    <img src="https://images.unsplash.com/photo-1604079628040-94301bb21b91">
-    <span>🧞 Genie Bazaar</span>
-  </a>
+  <div class="card vending" onclick="go('vending.html')">
+    <span>🕹</span>
+    Arcade Vending
+  </div>
 
 </div>
+
+<div class="note">Select a direction to explore</div>
+
+<script>
+function go(page) {
+  window.location.href = page;
+}
+</script>
 
 </body>
 </html>
